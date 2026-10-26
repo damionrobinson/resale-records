@@ -6,7 +6,9 @@ import './site/site.css';
 // Each website HTML file sets <div id="root" data-page="...">. In a production build the HTML is
 // already rendered (see scripts/prerender.mjs), so React takes it over; in dev it renders fresh.
 const root = document.getElementById('root')!;
-const { Component } = PAGES[root.dataset.page || 'home'];
+const { Component, head } = PAGES[root.dataset.page || 'home'];
+if (head && !document.title) document.title = head.title; // dev only: the build writes the <head>
+
 const tree = <StrictMode><Component /></StrictMode>;
 if (root.firstElementChild) hydrateRoot(root, tree);
 else createRoot(root).render(tree);

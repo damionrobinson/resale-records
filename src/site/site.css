@@ -132,3 +132,11 @@ input[type="number"] { width: 100%; min-height: 2.75rem; padding: 0 0.7rem; bord
 .doc table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
 .doc th, .doc td { text-align: left; vertical-align: top; padding: 0.5rem; border-bottom: 1px solid var(--rule); }
 .doc th { color: var(--ink); }
+
+/* Search guides: an article column, the free check full width, then the call to action, FAQ and other guides */
+.guide .doc { padding-block: 1.5rem 3rem; }
+.guide .doc h2 { margin-top: 1.2rem; }
+.guide .answer { color: var(--ink); font-size: 1.2rem; }
+.guide .ticket h2, .guide .ticket p { margin: 0; }
+.guide .ticket p { color: var(--ink-soft); }
+.guide .faq summary { font-size: 1rem; }

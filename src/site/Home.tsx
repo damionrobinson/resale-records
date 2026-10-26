@@ -1,4 +1,5 @@
 import { GOV, PAY_URL } from '../shared/site';
+import { GUIDES } from './guides';
 import { SiteFooter, SiteHeader } from './Layout';
 import ReportChecker from './ReportChecker';
 
@@ -135,6 +136,15 @@ export default function Home() {
               <details><summary>What do I get free, and what does £19 add?</summary>
                 <div><p>Free: everything for up to 20 sales, including your tax-year summary, the platform report check and a preview of your tax year record. £19 once: unlimited sales, and your tax year record to save as a PDF, print or give to an accountant. After paying, we email your unlock code within one working day.</p></div></details>
             </div>
+          </div>
+        </section>
+
+        <section className="plain" id="guides">
+          <div className="wrap">
+            <div className="head"><span className="label">Guides</span><h2>The rules, explained</h2></div>
+            <ul className="grid3">
+              {GUIDES.map((g) => <li key={g.key}><h3><a href={g.path}>{g.h1}</a></h3><p>{g.blurb}</p></li>)}
+            </ul>
           </div>
         </section>
       </main>

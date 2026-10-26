@@ -6,13 +6,16 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const { render, pages } = await import(pathToFileURL(join(root, 'dist-ssr/entry-server.js')).href);
+const { render, head, pages } = await import(pathToFileURL(join(root, 'dist-ssr/entry-server.js')).href);
 
 for (const [page, file] of Object.entries(pages)) {
   const path = join(root, 'dist', file);
   const html = readFileSync(path, 'utf8');
   if (!html.includes('<!--ssr-->')) throw new Error(`${file} has no <!--ssr--> placeholder`);
-  writeFileSync(path, html.replace('<!--ssr-->', render(page)));
+  // Pages with metadata in src/pages.tsx get it at <!--head-->; the others keep the tags written in their HTML file.
+  const tags = head(page);
+  if (Boolean(tags) !== html.includes('<!--head-->')) throw new Error(`${file}: <!--head--> placeholder and page metadata must go together`);
+  writeFileSync(path, html.replace('<!--head-->', tags ?? '').replace('<!--ssr-->', render(page)));
   console.log(`pre-rendered ${file}`);
 }
 rmSync(join(root, 'dist-ssr'), { recursive: true, force: true });
