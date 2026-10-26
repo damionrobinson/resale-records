@@ -1,0 +1,1 @@
+Synthetic test files that imitate each platform's export layout. Column names are best guesses from public guides, not confirmed against real downloads. Replace with real (anonymised) exports when available.
