@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import * as C from '../../core';
 import type { Kind, Sale } from '../../core';
+import { GOV, TAXAID } from '../../shared/site';
 import { gbp, ukDate } from '../state';
 
 const GOV_REPORTING = 'https://www.gov.uk/guidance/reporting-rules-for-digital-platforms';
@@ -22,9 +23,11 @@ interface Props {
   onBackup: () => void;
   onRestore: (f: File) => void;
   onClear: () => void;
+  /** The free limit is full, so some of the user's sales may be missing from these figures. */
+  capped?: boolean;
 }
 
-export function Summary({ sales, taxYear, calYear, setTaxYear, setCalYear, onOpenRecord }: Props) {
+export function Summary({ sales, taxYear, calYear, setTaxYear, setCalYear, onOpenRecord, capped }: Props) {
   const years = C.taxYearsIn(sales);
   const cals = [...new Set(sales.map((s) => C.calendarYearOf(s.date)))].sort().reverse();
   const s = C.taxYearSummary(sales, taxYear);
@@ -61,11 +64,13 @@ export function Summary({ sales, taxYear, calYear, setTaxYear, setCalYear, onOpe
           <div key={r.platform}>
             <strong>{r.platform}</strong>
             <span>{r.count} sale{r.count === 1 ? '' : 's'} · {gbp(r.total)}</span>
-            <span className={`chip ${r.reported ? 'flag' : r.near ? '' : 'ok'}`}>{r.reported ? 'Will report' : r.near ? 'Close' : 'Not yet'}</span>
+            {/* With the free limit full we can't say "not yet": the sales we didn't keep might cross the limit */}
+            <span className={`chip ${r.reported ? 'flag' : r.near || capped ? '' : 'ok'}`}>{r.reported ? 'Will report' : capped ? 'Can’t tell' : r.near ? 'Close' : 'Not yet'}</span>
           </div>
         )) : <p className="notice">No sales in this year.</p>}
       </div>
       <p className="notice">A record-keeping tool, not tax advice. See <a href={GOV_REPORTING} target="_blank" rel="noopener">GOV.UK reporting rules</a> and <a href={GOV_ALLOWANCE} target="_blank" rel="noopener">the trading allowance</a>.</p>
+      <p className="notice">Free help: <a href={GOV.additionalIncome} target="_blank" rel="noopener">HMRC’s checker</a> tells you whether you need to tell HMRC about this income, and the charity <a href={TAXAID} target="_blank" rel="noopener">TaxAid</a> helps people who can’t afford an adviser.</p>
     </aside>
   );
 }
@@ -162,7 +167,7 @@ export function EmptyState({ onImportFile, onVinted, onAdd, onExample }: { onImp
         </div>
       </div>
       <dl className="how">
-        <div><dt>Etsy</dt><dd>Shop Manager › Settings › Options › Download Data › Orders</dd></div>
+        <div><dt>Etsy</dt><dd>Shop Manager › Settings › Options › Download Data › Orders (not Order Items, or sales count twice)</dd></div>
         <div><dt>eBay</dt><dd>Seller Hub › Orders › Download report</dd></div>
         <div><dt>Depop</dt><dd>Selling Hub on the website › Stats › Download sales (3 months per file)</dd></div>
         <div><dt>Vinted</dt><dd>Balance › Payment history › pick a month, select all and copy, then "Paste from Vinted"</dd></div>

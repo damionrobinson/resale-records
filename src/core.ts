@@ -31,6 +31,8 @@ export interface ColumnMap {
 export type CsvRecord = Record<string, string>;
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
+/** A refund (negative) or cancelled (£0) row still nets off the totals, but isn't counted as a sale. */
+export const isSale = (s: Sale) => s.amount > 0;
 
 // ---------- CSV ----------
 export function parseCSV(input: string): { headers: string[]; records: CsvRecord[] } {
@@ -125,7 +127,7 @@ export function parseMoney(v: unknown): number {
   let s = String(v).replace(/[£$€\s]|GBP|USD|EUR/gi, '');
   const neg = /^\(.*\)$/.test(s) || /^-/.test(s);
   s = s.replace(/[()-]/g, '');
-  if (/^\d{1,3}(\.\d{3})*,\d{1,2}$/.test(s)) s = s.replace(/\./g, '').replace(',', '.'); // 1.234,56
+  if (/^\d+(\.\d{3})*,\d{1,2}$/.test(s)) s = s.replace(/\./g, '').replace(',', '.'); // 1.234,56 or 1 234,56
   else s = s.replace(/,/g, '');
   const n = parseFloat(s);
   return isNaN(n) ? NaN : neg ? -n : n;
@@ -170,13 +172,25 @@ export function localISO(d: Date): string {
 export function recordsToSales(records: CsvRecord[], map: ColumnMap, dateOrder: DateOrder, source = 'import') {
   const sales: Sale[] = [];
   const skipped: number[] = [];
+  const seen: Record<string, number> = {};
   records.forEach((r, i) => {
     const date = parseDate(r[map.date], dateOrder);
-    const amount = parseMoney(r[map.amount]);
+    let amount = parseMoney(r[map.amount]);
+    // Etsy's Orders file leaves refunds out of Order Value. "Adjusted Order Total" is blank with no refund, 0 after a
+    // full refund and the remainder after a partial one, so the refund is Order Total minus Adjusted Order Total.
+    const adjusted = r['Adjusted Order Total'];
+    if (map.amount === 'Order Value' && adjusted != null && adjusted !== '' && !isNaN(amount)) {
+      const refund = parseMoney(r['Order Total']) - parseMoney(adjusted);
+      if (refund > 0) amount = Math.max(0, amount - refund);
+    }
     if (!date || isNaN(amount)) { skipped.push(i + 2); return; }
     const fees = map.fees ? Math.abs(parseMoney(r[map.fees])) : 0;
+    // With an order number, an identical row is the same sale listed twice. Without one, the nth identical row
+    // in a file is numbered n, so overlapping downloads (Depop gives 3 months per file) match up instead of doubling.
+    let id = `${map.platform}|${map.orderId ? r[map.orderId] : ''}|${date}|${amount}|${map.item ? r[map.item] : ''}|`;
+    if (!map.orderId) id += (seen[id] = (seen[id] || 0) + 1);
     sales.push({
-      id: `${map.platform}|${map.orderId ? r[map.orderId] : ''}|${date}|${amount}|${map.item ? r[map.item] : ''}|${map.orderId ? '' : i}`,
+      id,
       platform: map.platform || 'Other',
       date,
       item: (map.item ? r[map.item] : '').slice(0, 140),
@@ -193,9 +207,14 @@ export function recordsToSales(records: CsvRecord[], map: ColumnMap, dateOrder: 
 // Vinted has no sales download. Its Balance › Payment history pages (one month each) copy as blocks:
 //   Sold / <item title> / £12.00 / 10 August 2024
 // Withdrawals, purchases and refunds use other first lines and are skipped. Works on a whole-page copy.
-const MONEY_LINE = /^-?£\s?[\d,]+(\.\d{1,2})?$/;
-const DATE_LINE = /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/;
-export function parseVintedHistory(text: string) {
+const MONEY_LINE = /^[-+]?£\s?[\d,]+(\.\d{1,2})?$/;
+const DATE_LINE = /^(\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}|\d{1,2}\/\d{1,2}\/\d{4}|today|yesterday)$/i;
+function vintedDate(line: string, today: Date): string {
+  const word = line.toLowerCase();
+  if (word === 'today' || word === 'yesterday') return localISO(new Date(today.getFullYear(), today.getMonth(), today.getDate() - (word === 'yesterday' ? 1 : 0)));
+  return parseDate(line, 'DMY');
+}
+export function parseVintedHistory(text: string, today = new Date()) {
   const lines = String(text || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   const sales: Sale[] = [];
   let skipped = 0;
@@ -206,8 +225,8 @@ export function parseVintedHistory(text: string) {
     while (j < lines.length && !MONEY_LINE.test(lines[j]) && title.length < 3) title.push(lines[j++]);
     const money = lines[j], date = lines[j + 1];
     if (!MONEY_LINE.test(money || '') || !DATE_LINE.test(date || '')) { skipped++; continue; }
-    const when = parseDate(date, 'DMY');
-    const amount = parseMoney(money);
+    const when = vintedDate(date, today);
+    const amount = parseMoney(money.replace('+', ''));
     if (!when || isNaN(amount)) { skipped++; continue; }
     const item = title.join(' ').slice(0, 140);
     sales.push({ id: `Vinted|history|${when}|${amount}|${item}`, platform: 'Vinted', date: when, item, amount: round2(amount), fees: 0, cost: null, kind: 'unsorted', source: 'vinted-paste' });
@@ -253,16 +272,18 @@ export function taxYearSummary(sales: Sale[], taxYear: string): TaxYearSummary {
   let resale = 0, personal = 0, unsorted = 0, unsortedCount = 0, resaleCost = 0, resaleFees = 0, missingCost = 0;
   for (const s of inYear) {
     const p = (byPlatform[s.platform] = byPlatform[s.platform] || { count: 0, total: 0 });
-    p.count++; p.total += s.amount;
+    if (isSale(s)) p.count++;
+    p.total += s.amount;
     if (s.kind === 'resale') {
       resale += s.amount; resaleFees += s.fees || 0;
-      if (s.cost == null) missingCost++; else resaleCost += s.cost;
+      if (s.cost != null) resaleCost += s.cost;
+      else if (isSale(s)) missingCost++;
     } else if (s.kind === 'personal') personal += s.amount;
-    else { unsorted += s.amount; unsortedCount++; }
+    else { unsorted += s.amount; if (isSale(s)) unsortedCount++; }
   }
   Object.values(byPlatform).forEach((p) => { p.total = round2(p.total); });
   return {
-    taxYear, count: inYear.length, byPlatform,
+    taxYear, count: inYear.filter(isSale).length, byPlatform,
     resale: round2(resale), personal: round2(personal), unsorted: round2(unsorted), unsortedCount,
     resaleCost: round2(resaleCost), resaleFees: round2(resaleFees),
     resaleProfit: round2(resale - resaleCost - resaleFees), missingCost,
@@ -276,7 +297,8 @@ export function reportingCheck(sales: Sale[], year: number): ReportRow[] {
   for (const s of sales) {
     if (calendarYearOf(s.date) !== year) continue;
     const p = (by[s.platform] = by[s.platform] || { count: 0, total: 0 });
-    p.count++; p.total += s.amount;
+    if (isSale(s)) p.count++;
+    p.total += s.amount;
   }
   return Object.entries(by).map(([platform, p]) => {
     const reported = p.count >= REPORT_SALES || p.total > REPORT_GBP;
@@ -311,7 +333,8 @@ export function taxYearRecord(all: Sale[], taxYear: string): TaxYearRecord {
     if (key === `${start + 1}-04`) key = `${start + 1}-03`; // 1-5 April of the following year
     const row = months.find((r) => r.key === key);
     if (!row) continue;
-    row.count++; row[s.kind] = round2(row[s.kind] + s.amount);
+    if (isSale(s)) row.count++;
+    row[s.kind] = round2(row[s.kind] + s.amount);
   }
   return {
     summary,
