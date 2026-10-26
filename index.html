@@ -135,7 +135,7 @@ footer .wrap { display: grid; gap: 0.6rem; }
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#">Resale<span>Records</span></a>
-    <a class="btn ghost" href="#offer">Early access £19</a>
+    <a class="btn ghost" href="app/">Open the app</a>
   </div>
 </header>
 
@@ -147,10 +147,10 @@ footer .wrap { display: grid; gap: 0.6rem; }
       <h1>Your sales, sorted into a UK tax-year record before 31 January.</h1>
       <p class="lede">Platforms now send seller details to HMRC. Resale Records puts every sale in one place, shows which platforms will report you, and keeps your clear-out sales apart from items you bought to resell.</p>
       <div class="actions">
-        <a class="btn" href="#offer">Get early access for £19</a>
+        <a class="btn" href="app/">Try it free</a>
         <a class="btn ghost" href="#check">Will I be reported? Free check</a>
       </div>
-      <p class="fine">A record-keeping tool, not tax advice. We link to GOV.UK for the rules.</p>
+      <p class="fine">Free for up to 20 sales. Works in your browser; your sales never leave your device. A record-keeping tool, not tax advice.</p>
     </div>
     <figure class="receipt" aria-label="Example summary">
       <span class="ex">EXAMPLE</span>
@@ -219,25 +219,25 @@ footer .wrap { display: grid; gap: 0.6rem; }
 <section class="band" id="offer">
   <div class="wrap offer">
     <div class="ticket">
-      <span class="label">Early access</span>
-      <div class="price">£19 <small>covers 2025/26 and 2026/27</small></div>
+      <span class="label">Pricing</span>
+      <div class="price">Free <small>up to 20 sales</small></div>
       <ul>
-        <li>Your 2025/26 record, ready for the 31 January 2027 deadline</li>
-        <li>Tracking for 2026/27 until 5 April 2027</li>
-        <li>Access by 1 December 2026, or a full refund</li>
-        <li>Full refund for 14 days after you get access, no questions</li>
+        <li>Import, sort and see your tax-year summary and platform reports, free</li>
+        <li><strong>£19 once</strong> unlocks unlimited sales and the downloadable summary for Self Assessment</li>
+        <li>Covers the 2025/26 and 2026/27 tax years</li>
+        <li>Full refund within 14 days, no questions</li>
       </ul>
-      <div id="preorder"></div>
-      <p class="fine">Early access is limited while we build. You're paying for a product that doesn't exist yet; if we don't deliver by 1 December, you get every penny back.</p>
+      <div class="hero-actions"><a class="btn" href="app/">Try it free</a><span id="preorder"></span></div>
+      <p class="fine">Your 2025/26 record is what you need for the 31 January 2027 Self Assessment deadline.</p>
     </div>
     <div class="head" style="margin:0">
-      <h2>What it will do</h2>
+      <h2>What it does</h2>
       <p>One place for all your selling platforms, sorted by UK tax year.</p>
       <dl class="platforms">
         <div><dt>Etsy</dt><dd>Import the orders file from Shop Manager</dd></div>
         <div><dt>eBay</dt><dd>Import the orders report from Seller Hub</dd></div>
         <div><dt>Depop</dt><dd>Import the sales file from Selling Hub</dd></div>
-        <div><dt>Vinted</dt><dd>Quick-add your sales. Vinted has no sales download yet; we're testing import from Vinted's data download</dd></div>
+        <div><dt>Vinted</dt><dd>Add sales by hand. Vinted has no sales download yet</dd></div>
       </dl>
       <p>Then mark each sale as bought-to-resell or personal, add what you paid and your costs, and download a summary for your Self Assessment or your accountant.</p>
     </div>
@@ -255,9 +255,9 @@ footer .wrap { display: grid; gap: 0.6rem; }
       <details><summary>Do you connect to my accounts?</summary>
         <div><p>No. You download your own sales files from each platform and upload them. We never ask for your platform passwords.</p></div></details>
       <details><summary>What happens to my data?</summary>
-        <div><p>We use it only to build your records, and you can delete it at any time. Read the <a href="privacy.html">privacy notice</a> for what we hold now, during early access.</p></div></details>
-      <details><summary>Why pay now?</summary>
-        <div><p>We'd rather build what sellers will actually pay for. Early access is cheaper than the launch price, and it's fully refundable if we don't deliver by 1 December 2026.</p></div></details>
+        <div><p>Your sales stay in your own browser on your device. Nothing is uploaded to us. Read the <a href="privacy.html">privacy notice</a>.</p></div></details>
+      <details><summary>What do I get free, and what does £19 add?</summary>
+        <div><p>Free: everything for up to 20 sales, including your tax-year summary and the platform report check. £19 once: unlimited sales and the downloadable summary to use for Self Assessment or give to an accountant. After paying, we email your unlock code within one working day.</p></div></details>
     </div>
   </div>
 </section>
@@ -304,7 +304,7 @@ footer .wrap { display: grid; gap: 0.6rem; }
 
   const slot = document.getElementById('preorder');
   if (cfg.preorderUrl) {
-    slot.innerHTML = '<a class="btn" href="' + encodeURI(cfg.preorderUrl) + '" rel="noopener">Pay £19 for early access</a>';
+    slot.innerHTML = '<a class="btn ghost" href="' + encodeURI(cfg.preorderUrl) + '" rel="noopener">Unlock for £19</a>';
   } else {
     slot.innerHTML = '<p class="fine"><strong>Not open yet.</strong> Early access opens soon.</p>';
   }

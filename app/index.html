@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resale Records app</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: working tool. Left column summary, right column sales; stacks on phones. Same tokens as the marketing page. */
+:root {
+  --ground: #edf0ee; --paper: #ffffff; --ink: #17201d; --soft: #4d5a55; --rule: #cfd8d4;
+  --accent: #0f6f62; --accent-ink: #ffffff; --flag: #a3420e; --ok: #2c7a4b; --warn-bg: #fbeee6; --ok-bg: #e5f2ea;
+  --sans: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --ground: #101614; --paper: #18211e; --ink: #e6ece9; --soft: #a2b0aa; --rule: #2b3733;
+    --accent: #3fb9a6; --accent-ink: #06201c; --flag: #f0a070; --ok: #6fc28f; --warn-bg: #3a2418; --ok-bg: #16301f; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --ground: #101614; --paper: #18211e; --ink: #e6ece9; --soft: #a2b0aa; --rule: #2b3733;
+  --accent: #3fb9a6; --accent-ink: #06201c; --flag: #f0a070; --ok: #6fc28f; --warn-bg: #3a2418; --ok-bg: #16301f; color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--ground); color: var(--ink); font: 400 15px/1.5 var(--sans); }
+a { color: var(--accent); }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 78rem; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.top { padding-block: 14px; border-bottom: 1px solid var(--rule); background: var(--paper); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font: 800 1.05rem/1 var(--sans); text-decoration: none; color: var(--ink); }
+.brand span { color: var(--accent); }
+.status { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 0.85rem; color: var(--soft); }
+.chip { font: 600 0.72rem/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 9px; border-radius: 999px; background: var(--ground); color: var(--soft); }
+.chip.ok { background: var(--ok-bg); color: var(--ok); }
+.chip.flag { background: var(--warn-bg); color: var(--flag); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 0; border-radius: 6px; background: var(--accent); color: var(--accent-ink); font-weight: 700; cursor: pointer; text-decoration: none; }
+.btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--rule); }
+.btn.small { min-height: 32px; padding: 0 10px; font-size: 0.85rem; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.label { font: 600 0.7rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--soft); }
+h1, h2, h3 { margin: 0; line-height: 1.15; text-wrap: balance; }
+h1 { font-size: 1.6rem; font-weight: 800; }
+h2 { font-size: 1.1rem; font-weight: 800; }
+main { padding-block: 22px 60px; }
+.notice { font-size: 0.85rem; color: var(--soft); }
+
+/* Empty state */
+.empty { display: grid; gap: 22px; max-width: 46rem; margin: 24px auto; text-align: left; }
+.drop { border: 2px dashed var(--rule); border-radius: 10px; background: var(--paper); padding: 28px; display: grid; gap: 12px; justify-items: start; }
+.drop.over { border-color: var(--accent); }
+.how { display: grid; gap: 8px; margin: 0; }
+.how div { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 10px; }
+.how dt { font-weight: 700; }
+.how dd { margin: 0; color: var(--soft); }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+/* Workspace */
+.work { display: grid; grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); gap: 20px; align-items: start; }
+.panel { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.kv { display: grid; gap: 6px; font-variant-numeric: tabular-nums; }
+.kv div { display: flex; justify-content: space-between; gap: 10px; }
+.kv .big { font: 800 1.5rem/1.1 var(--sans); }
+.kv .sep { border-top: 1px dashed var(--rule); padding-top: 6px; margin-top: 2px; }
+.rep { display: grid; gap: 8px; }
+.rep div { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.callout { border-left: 4px solid var(--flag); background: var(--warn-bg); padding: 10px 12px; font-size: 0.88rem; border-radius: 0 6px 6px 0; }
+.callout.info { border-color: var(--accent); background: var(--ground); }
+select, input[type="number"], input[type="text"], input[type="date"] { min-height: 36px; padding: 0 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 10px; border-bottom: 1px solid var(--rule); text-align: left; vertical-align: middle; white-space: nowrap; }
+th { font: 600 0.7rem/1.2 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--soft); background: var(--ground); position: sticky; top: 0; }
+td.item { white-space: normal; min-width: 12rem; max-width: 24rem; }
+td.num { text-align: right; }
+td input[type="number"] { width: 6.5rem; text-align: right; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 5px 9px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--soft); }
+.seg button[aria-pressed="true"].resale { background: var(--accent); color: var(--accent-ink); }
+.seg button[aria-pressed="true"].personal { background: var(--ink); color: var(--ground); }
+.del { border: 0; background: none; color: var(--soft); cursor: pointer; font-size: 1rem; }
+
+/* Dialog */
+dialog { border: 1px solid var(--rule); border-radius: 12px; padding: 0; background: var(--paper); color: var(--ink); width: min(40rem, calc(100vw - 32px)); }
+dialog::backdrop { background: rgb(10 15 13 / 0.55); }
+.dlg { padding: 20px; display: grid; gap: 14px; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 14px; }
+.grid2 label { display: grid; gap: 4px; font-size: 0.82rem; font-weight: 600; }
+.preview { font: 400 0.82rem/1.5 var(--mono); background: var(--ground); border-radius: 6px; padding: 10px; overflow-x: auto; white-space: pre; }
+.toast { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--ground); padding: 10px 16px; border-radius: 8px; font-size: 0.9rem; max-width: calc(100vw - 32px); }
+footer { padding-block: 24px; font-size: 0.8rem; color: var(--soft); }
+footer .wrap { display: grid; gap: 4px; }
+
+@media (max-width: 900px) { .work { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+@media print {
+  .top, .toolbar, .no-print, footer, .seg, .del, dialog { display: none !important; }
+  body { background: #fff; color: #000; }
+  .work { grid-template-columns: 1fr; }
+  .panel, .table-wrap { border: 0; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../">Resale<span>Records</span></a>
+    <div class="status">
+      <span>Your data stays on this device</span>
+      <span class="chip" id="plan-chip">Free · 0/20 sales</span>
+      <button class="btn small" id="unlock-btn" type="button">Unlock all</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="empty" id="empty" hidden>
+    <div>
+      <span class="label">Step 1</span>
+      <h1>Bring in your sales</h1>
+      <p class="notice">Download your sales file from each platform, then drop it here. Nothing is uploaded; the file is read on this device.</p>
+    </div>
+    <div class="drop" id="drop">
+      <strong>Drop a sales file here (.csv)</strong>
+      <div class="row">
+        <label class="btn" for="file-input">Choose file</label>
+        <input id="file-input" type="file" accept=".csv,.txt,text/csv" hidden>
+        <button class="btn ghost" type="button" data-action="add">Add a sale by hand</button>
+        <button class="btn ghost" type="button" data-action="example">Try example data</button>
+      </div>
+    </div>
+    <dl class="how">
+      <div><dt>Etsy</dt><dd>Shop Manager › Settings › Options › Download Data › Orders</dd></div>
+      <div><dt>eBay</dt><dd>Seller Hub › Orders › Download report</dd></div>
+      <div><dt>Depop</dt><dd>Selling Hub on the website › Stats › Download sales (3 months per file)</dd></div>
+      <div><dt>Vinted</dt><dd>No sales download yet. Use "Add a sale by hand"</dd></div>
+    </dl>
+  </section>
+
+  <section class="work" id="work" hidden>
+    <aside class="panel" id="summary-panel">
+      <div class="toolbar">
+        <h2>Summary</h2>
+        <select id="tax-year" aria-label="Tax year"></select>
+      </div>
+      <div class="kv" id="kv"></div>
+      <div id="allowance"></div>
+      <div class="toolbar"><h2>Platform reports</h2><select id="cal-year" aria-label="Calendar year"></select></div>
+      <p class="notice">Each platform reports you to HMRC once you make 30 sales, or take more than about £1,700, on it in a calendar year.</p>
+      <div class="rep" id="rep"></div>
+      <p class="notice">A record-keeping tool, not tax advice. See <a href="https://www.gov.uk/guidance/reporting-rules-for-digital-platforms" target="_blank" rel="noopener">GOV.UK reporting rules</a> and <a href="https://www.gov.uk/guidance/tax-free-allowances-on-property-and-trading-income" target="_blank" rel="noopener">the trading allowance</a>.</p>
+    </aside>
+
+    <section class="panel">
+      <div class="toolbar">
+        <h2 id="sales-title">Sales</h2>
+        <div class="row no-print">
+          <label class="btn small" for="file-input-2">Import file</label>
+          <input id="file-input-2" type="file" accept=".csv,.txt,text/csv" hidden>
+          <button class="btn small ghost" type="button" data-action="add">Add sale</button>
+          <button class="btn small ghost" type="button" data-action="export">Download summary (CSV)</button>
+          <button class="btn small ghost" type="button" data-action="print">Print / PDF</button>
+        </div>
+      </div>
+      <div class="toolbar no-print">
+        <div class="filters">
+          <select id="f-platform" aria-label="Filter by platform"><option value="">All platforms</option></select>
+          <select id="f-kind" aria-label="Filter by type"><option value="">All types</option><option value="unsorted">Not sorted</option><option value="resale">Bought to resell</option><option value="personal">Personal</option></select>
+        </div>
+        <div class="row">
+          <span class="notice">Mark all shown as</span>
+          <button class="btn small ghost" type="button" data-action="bulk-resale">Resale</button>
+          <button class="btn small ghost" type="button" data-action="bulk-personal">Personal</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>Platform</th><th>Item</th><th>Sold for £</th><th>Fees £</th><th>You paid £</th><th>Type</th><th class="no-print"></th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="row no-print">
+        <button class="btn small ghost" type="button" data-action="backup">Back up data</button>
+        <label class="btn small ghost" for="restore-input">Restore backup</label>
+        <input id="restore-input" type="file" accept=".json,application/json" hidden>
+        <button class="btn small ghost" type="button" data-action="clear">Delete all data</button>
+      </div>
+    </section>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Resale Records is a trading name of Design Definition Limited, company number 15183622. Record-keeping tool, not tax advice. Not affiliated with HMRC, Vinted, eBay, Etsy or Depop.</span>
+    <span><a href="../privacy.html">Privacy notice</a> · <a href="mailto:info@designdefinition.info">info@designdefinition.info</a></span>
+  </div>
+</footer>
+
+<dialog id="map-dlg">
+  <form method="dialog" class="dlg" id="map-form">
+    <h2>Check how we read this file</h2>
+    <p class="notice" id="map-file"></p>
+    <div class="grid2">
+      <label for="m-platform">Platform<select id="m-platform"><option>Etsy</option><option>eBay</option><option>Depop</option><option>Vinted</option><option>Other</option></select></label>
+      <label for="m-order">Date format<select id="m-order"><option value="DMY">Day/Month/Year</option><option value="MDY">Month/Day/Year</option></select></label>
+      <label for="m-date">Sale date column<select id="m-date"></select></label>
+      <label for="m-amount">Sale amount column<select id="m-amount"></select></label>
+      <label for="m-item">Item column<select id="m-item"></select></label>
+      <label for="m-fees">Fees column (optional)<select id="m-fees"></select></label>
+      <label for="m-orderId">Order number column (optional)<select id="m-orderId"></select></label>
+    </div>
+    <div><span class="label">Preview</span><div class="preview" id="map-preview"></div></div>
+    <p class="notice" id="map-limit"></p>
+    <div class="row"><button class="btn" value="ok" id="map-ok">Import</button><button class="btn ghost" value="cancel" formnovalidate>Cancel</button></div>
+  </form>
+</dialog>
+
+<dialog id="add-dlg">
+  <form method="dialog" class="dlg" id="add-form">
+    <h2>Add a sale</h2>
+    <div class="grid2">
+      <label for="a-platform">Platform<select id="a-platform"><option>Vinted</option><option>eBay</option><option>Etsy</option><option>Depop</option><option>Other</option></select></label>
+      <label for="a-date">Date sold<input id="a-date" type="date" required></label>
+      <label for="a-item">Item<input id="a-item" type="text" maxlength="140" placeholder="e.g. Levi's 501 jeans"></label>
+      <label for="a-amount">Sold for £<input id="a-amount" type="number" min="0" step="0.01" required></label>
+      <label for="a-fees">Fees £ (optional)<input id="a-fees" type="number" min="0" step="0.01"></label>
+      <label for="a-cost">You paid £ (optional)<input id="a-cost" type="number" min="0" step="0.01"></label>
+      <label for="a-kind">Type<select id="a-kind"><option value="unsorted">Decide later</option><option value="resale">Bought to resell</option><option value="personal">Personal clear-out</option></select></label>
+    </div>
+    <div class="row"><button class="btn" value="ok">Add sale</button><button class="btn ghost" value="cancel" formnovalidate>Cancel</button></div>
+  </form>
+</dialog>
+
+<dialog id="unlock-dlg">
+  <form method="dialog" class="dlg" id="unlock-form">
+    <h2>Unlock Resale Records</h2>
+    <p>The free version holds 20 sales. Unlock for unlimited sales and the downloadable summary, for the 2025/26 and 2026/27 tax years.</p>
+    <div class="row"><a class="btn" id="pay-link" href="#" target="_blank" rel="noopener">Pay £19 with PayPal</a><span class="notice">One payment. Refund within 14 days if it's not for you.</span></div>
+    <p class="notice">After paying, we email your unlock code to your PayPal email address within one working day.</p>
+    <label for="code-input" style="display:grid;gap:4px;font-weight:600">Already have a code?<input id="code-input" type="text" placeholder="RR-XXXX-XXXX-XX" autocomplete="off"></label>
+    <p class="notice" id="code-msg" role="status"></p>
+    <div class="row"><button class="btn" value="ok" id="code-ok">Unlock</button><button class="btn ghost" value="cancel" formnovalidate>Close</button></div>
+  </form>
+</dialog>
+
+<script src="core.js?v=5"></script>
+<script src="app.js?v=5"></script>
+</body>
+</html>
