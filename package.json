@@ -1,13 +1,14 @@
 {
-  "name": "resale-records-app",
+  "name": "resale-records",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
     "test": "vitest run",
-    "preview": "vite preview"
+    "build": "tsc --noEmit && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "preview": "vite preview",
+    "make-code": "node --experimental-strip-types scripts/make-code.mjs"
   },
   "dependencies": {
     "react": "19.1.0",

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import * as C from './core';
-import type { Sale } from './core';
+import * as C from '../core';
+import type { Sale } from '../core';
 import { AddSaleDialog, ImportDialog, UnlockDialog, VintedDialog, type PendingFile } from './components/Dialogs';
 import TaxYearRecord from './components/TaxYearRecord';
 import { EmptyState, SalesTable, Summary } from './components/Workspace';
@@ -119,7 +119,7 @@ export default function App() {
     <>
       <header className="top no-print">
         <div className="wrap">
-          <a className="brand" href="../">Resale<span>Records</span></a>
+          <a className="brand" href="/">Resale<span>Records</span></a>
           <div className="status">
             <span>Your data stays on this device</span>
             <span className={`chip${unlocked ? ' ok' : state.sales.length >= C.FREE_SALES_LIMIT ? ' flag' : ''}`}>{unlocked ? 'Unlocked' : `Free · ${state.sales.length}/${C.FREE_SALES_LIMIT} sales`}</span>
@@ -151,7 +151,7 @@ export default function App() {
       <footer className="app-foot no-print">
         <div className="wrap">
           <span>Resale Records is a trading name of Design Definition Limited, company number 15183622. Record-keeping tool, not tax advice. Not affiliated with HMRC, Vinted, eBay, Etsy or Depop.</span>
-          <span><a href="../privacy.html">Privacy notice</a> · <a href={`mailto:${CONTACT}`}>{CONTACT}</a></span>
+          <span><a href="/privacy.html">Privacy notice</a> · <a href={`mailto:${CONTACT}`}>{CONTACT}</a></span>
         </div>
       </footer>
 

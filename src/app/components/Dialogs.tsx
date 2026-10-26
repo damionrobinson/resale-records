@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import * as C from '../core';
-import type { ColumnMap, CsvRecord, DateOrder, Kind, Sale } from '../core';
+import * as C from '../../core';
+import type { ColumnMap, CsvRecord, DateOrder, Kind, Sale } from '../../core';
 import { gbp, PAY_URL, ukDate } from '../state';
 import Modal from './Modal';
 

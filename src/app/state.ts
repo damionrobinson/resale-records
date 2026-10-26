@@ -1,7 +1,6 @@
-import type { Sale } from './core';
+import type { Sale } from '../core';
 
-export const PAY_URL = 'https://www.paypal.com/ncp/payment/7S3U3RHLNE8WW';
-export const CONTACT = 'info@designdefinition.info';
+export { CONTACT, PAY_URL } from '../shared/site';
 const KEY = 'rr.v1'; // same key as the first version, so existing data carries over
 
 export interface AppState {

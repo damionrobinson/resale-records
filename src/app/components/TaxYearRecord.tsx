@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import * as C from '../core';
-import type { Sale } from '../core';
+import * as C from '../../core';
+import type { Sale } from '../../core';
 import { gbp, longDate, ukDate } from '../state';
 
 const GOV_ALLOWANCE = 'https://www.gov.uk/guidance/tax-free-allowances-on-property-and-trading-income';

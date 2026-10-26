@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import * as C from '../core';
-import type { Kind, Sale } from '../core';
+import * as C from '../../core';
+import type { Kind, Sale } from '../../core';
 import { gbp, ukDate } from '../state';
 
 const GOV_REPORTING = 'https://www.gov.uk/guidance/reporting-rules-for-digital-platforms';
