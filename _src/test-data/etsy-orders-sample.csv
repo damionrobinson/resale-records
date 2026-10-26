@@ -1,0 +1,4 @@
+Sale Date,Order ID,Buyer User ID,Full Name,Number of Items,Payment Method,Date Shipped,Order Value,Card Processing Fees,Order Net,Order Total
+04/05/26,3301,u1,Test Buyer,1,Card,04/07/26,25.00,1.20,23.80,28.50
+04/06/26,3302,u2,Test Buyer,2,Card,04/08/26,40.00,1.80,38.20,44.00
+11/21/25,3303,u3,Test Buyer,1,PayPal,11/22/25,"1,250.00",50.20,1199.80,1255.00

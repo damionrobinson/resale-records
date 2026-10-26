@@ -1,0 +1,32 @@
+Balance
+My Balance
+Payment history
+2026
+2025
+2024
+December
+November
+Invoices
+Income
+June 2024
+Ending balance
+£17.99
+Starting balance
+£5.99
+Transactions
+Sold
+Example denim jacket size 12
+£12.80
+29 June 2024
+Withdrawal to bank account
+****0000
+-£10.00
+24 June 2024
+Sold
+Example bundle of craft beads
+£10.00
+24 June 2024
+Sold
+Example trainers size 6
+£8.80
+5 April 2024
