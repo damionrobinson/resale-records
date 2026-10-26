@@ -129,7 +129,7 @@ dialog::backdrop { background: rgb(10 15 13 / 0.55); }
 .rec-tab td.item { white-space: normal; }
 .rec-tab tr.muted td { color: #9aa6a1; }
 .rec-cal { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
-.rec-list { break-before: page; break-inside: auto; }
+.rec-list { break-inside: auto; }
 .rec-list tr { break-inside: avoid; }
 .rec-foot { margin-top: 16px; padding-top: 8px; border-top: 1px solid #cfd8d4; font-size: 8.5pt; color: #4d5a55; }
 .rec-foot p { margin: 2px 0; }
