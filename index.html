@@ -114,6 +114,15 @@ input[type="number"] { width: 100%; min-height: 2.75rem; padding: 0 0.7rem; bord
 .platforms dt { font-weight: 700; }
 .platforms dd { margin: 0; color: var(--ink-soft); }
 
+/* AI comparison */
+.vs-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--paper); }
+.vs { border-collapse: collapse; width: 100%; min-width: 34rem; font-size: 0.95rem; }
+.vs th, .vs td { text-align: left; vertical-align: top; padding: 0.8rem 1rem; border-bottom: 1px solid var(--rule); }
+.vs thead th { font: 600 0.72rem/1.2 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); background: var(--ground); }
+.vs tbody th { font-weight: 600; width: 32%; }
+.vs td.us { color: var(--ink); font-weight: 600; }
+.vs td.them { color: var(--ink-soft); }
+.vs tr:last-child th, .vs tr:last-child td { border-bottom: 0; }
 .faq { border-top: 1px solid var(--rule); }
 .faq details { border-bottom: 1px solid var(--rule); padding-block: 1rem; }
 .faq summary { cursor: pointer; font-weight: 700; font-size: 1.1rem; }
@@ -244,12 +253,36 @@ footer .wrap { display: grid; gap: 0.6rem; }
   </div>
 </section>
 
-<section class="plain">
+<section class="plain" id="vs-ai">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">Why not just ask an AI chat?</span>
+      <h2>Your buyers' details stay private, and the rules are built in</h2>
+      <p>AI chats are handy, but your sales files contain your buyers' names and addresses, and a chat works the rules out from scratch every time.</p>
+    </div>
+    <div class="vs-wrap">
+      <table class="vs">
+        <thead><tr><th scope="col"></th><th scope="col">Asking an AI chat</th><th scope="col">Resale Records</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Your buyers' names and addresses</th><td class="them">Uploaded to an AI company</td><td class="us">Never leave your device</td></tr>
+          <tr><th scope="row">6 April tax year and the 30-sale rule</th><td class="them">Worked out fresh each time, and can be wrong</td><td class="us">Built in and tested, with GOV.UK links</td></tr>
+          <tr><th scope="row">Same answer every time</th><td class="them">Not guaranteed</td><td class="us">Yes</td></tr>
+          <tr><th scope="row">Keeps your record all year</th><td class="them">One chat at a time</td><td class="us">Yes, with backups</td></tr>
+          <tr><th scope="row">Effort</th><td class="them">Export files and write prompts</td><td class="us">Drop in your sales file</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="band">
   <div class="wrap">
     <div class="head"><span class="label">Questions</span><h2>Common questions</h2></div>
     <div class="faq">
       <details><summary>Does being reported mean I owe tax?</summary>
         <div><p>No. A platform report tells HMRC what you sold. Whether you owe anything depends on whether you were trading and your profit. GOV.UK has a <a href="https://www.gov.uk/check-additional-income-tax" rel="noopener" target="_blank">checker for additional income</a>, and explains the <a href="https://www.gov.uk/guidance/reporting-rules-for-digital-platforms" rel="noopener" target="_blank">platform reporting rules</a>.</p></div></details>
+      <details><summary>Why not just ask ChatGPT?</summary>
+        <div><p>You can, but you'd be uploading your buyers' names and addresses to an AI company, and the answer depends on the chat getting the 6 April tax year and the reporting rules right each time. Resale Records keeps everything on your device, applies the same tested rules every time, and keeps your record all year.</p></div></details>
       <details><summary>Is this tax advice?</summary>
         <div><p>No. Resale Records organises your records and shows the published rules. It won't tell you whether you're trading or what you owe. If you're unsure, use HMRC's guidance or an accountant.</p></div></details>
       <details><summary>Do you connect to my accounts?</summary>
