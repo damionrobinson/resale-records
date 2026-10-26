@@ -148,6 +148,29 @@
     });
     return { sales: out, skipped };
   }
+  // Vinted has no sales download. Its Balance › Payment history pages (one month each) copy as blocks:
+  //   Sold / <item title> / £12.00 / 10 August 2024
+  // Withdrawals, purchases and refunds use other first lines and are skipped. Works on a whole-page copy.
+  const MONEY_LINE = /^-?£\s?[\d,]+(\.\d{1,2})?$/;
+  const DATE_LINE = /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/;
+  function parseVintedHistory(text) {
+    const lines = String(text || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    const sales = []; let skipped = 0;
+    for (let i = 0; i < lines.length; i++) {
+      if (!/^sold$/i.test(lines[i])) continue;
+      const title = []; let j = i + 1;
+      while (j < lines.length && !MONEY_LINE.test(lines[j]) && title.length < 3) title.push(lines[j++]);
+      const money = lines[j], date = lines[j + 1];
+      if (!MONEY_LINE.test(money || '') || !DATE_LINE.test(date || '')) { skipped++; continue; }
+      const iso = parseDate(date, 'DMY'); const amount = parseMoney(money);
+      if (!iso || isNaN(amount)) { skipped++; continue; }
+      const item = title.join(' ').slice(0, 140);
+      sales.push({ id: `Vinted|history|${iso}|${amount}|${item}`, platform: 'Vinted', date: iso, item, amount: Math.round(amount * 100) / 100, fees: 0, cost: null, kind: 'unsorted', source: 'vinted-paste' });
+      i = j + 1;
+    }
+    return { sales, skipped };
+  }
+
   function mergeSales(existing, incoming) {
     const seen = new Set(existing.map((s) => s.id));
     const added = incoming.filter((s) => !seen.has(s.id) && seen.add(s.id));
@@ -250,7 +273,7 @@
   const api = {
     REPORT_SALES, REPORT_GBP, TRADING_ALLOWANCE, FREE_SALES_LIMIT,
     parseCSV, guessMapping, detectPlatform, parseMoney, parseDate, guessDateOrder,
-    recordsToSales, mergeSales, taxYearOf, calendarYearOf, taxYearSummary, reportingCheck, taxYearsIn,
+    recordsToSales, parseVintedHistory, mergeSales, taxYearOf, calendarYearOf, taxYearSummary, reportingCheck, taxYearsIn,
     exportCSV, isValidCode, makeCode,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

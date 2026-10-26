@@ -131,6 +131,7 @@ footer .wrap { display: grid; gap: 4px; }
       <div class="row">
         <label class="btn" for="file-input">Choose file</label>
         <input id="file-input" type="file" accept=".csv,.txt,text/csv" hidden>
+        <button class="btn ghost" type="button" data-action="vinted">Paste from Vinted</button>
         <button class="btn ghost" type="button" data-action="add">Add a sale by hand</button>
         <button class="btn ghost" type="button" data-action="example">Try example data</button>
       </div>
@@ -139,7 +140,7 @@ footer .wrap { display: grid; gap: 4px; }
       <div><dt>Etsy</dt><dd>Shop Manager › Settings › Options › Download Data › Orders</dd></div>
       <div><dt>eBay</dt><dd>Seller Hub › Orders › Download report</dd></div>
       <div><dt>Depop</dt><dd>Selling Hub on the website › Stats › Download sales (3 months per file)</dd></div>
-      <div><dt>Vinted</dt><dd>No sales download yet. Use "Add a sale by hand"</dd></div>
+      <div><dt>Vinted</dt><dd>Balance › Payment history › pick a month, select all and copy, then "Paste from Vinted"</dd></div>
     </dl>
   </section>
 
@@ -163,6 +164,7 @@ footer .wrap { display: grid; gap: 4px; }
         <div class="row no-print">
           <label class="btn small" for="file-input-2">Import file</label>
           <input id="file-input-2" type="file" accept=".csv,.txt,text/csv" hidden>
+          <button class="btn small ghost" type="button" data-action="vinted">Paste from Vinted</button>
           <button class="btn small ghost" type="button" data-action="add">Add sale</button>
           <button class="btn small ghost" type="button" data-action="export">Download summary (CSV)</button>
           <button class="btn small ghost" type="button" data-action="print">Print / PDF</button>
@@ -221,6 +223,21 @@ footer .wrap { display: grid; gap: 4px; }
   </form>
 </dialog>
 
+<dialog id="vinted-dlg">
+  <form method="dialog" class="dlg" id="vinted-form">
+    <h2>Paste from Vinted</h2>
+    <ol class="notice" style="margin:0;padding-left:1.2rem;display:grid;gap:4px">
+      <li>On Vinted (on a computer), open <strong>Balance › Payment history</strong>.</li>
+      <li>Pick a month, press <strong>Cmd+A</strong> (Windows: Ctrl+A) and copy.</li>
+      <li>Paste below. You can paste several months, one after another; repeats are skipped.</li>
+    </ol>
+    <label for="vinted-text" style="display:grid;gap:4px;font-weight:600">Copied text
+      <textarea id="vinted-text" rows="8" style="width:100%;padding:8px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);font:400 0.85rem/1.4 var(--mono)" placeholder="Sold&#10;Item title&#10;£12.00&#10;10 August 2024"></textarea></label>
+    <p class="notice" id="vinted-preview" role="status">Only lines starting with "Sold" are imported. Withdrawals and purchases are ignored.</p>
+    <div class="row"><button class="btn" value="ok" id="vinted-ok">Import sales</button><button class="btn ghost" value="cancel" formnovalidate>Cancel</button></div>
+  </form>
+</dialog>
+
 <dialog id="add-dlg">
   <form method="dialog" class="dlg" id="add-form">
     <h2>Add a sale</h2>
@@ -249,7 +266,7 @@ footer .wrap { display: grid; gap: 4px; }
   </form>
 </dialog>
 
-<script src="core.js?v=5"></script>
-<script src="app.js?v=5"></script>
+<script src="core.js?v=7"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>

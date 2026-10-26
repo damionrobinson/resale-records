@@ -132,9 +132,36 @@
     const result = unlocked() ? merged.sales : merged.sales.slice(0, Math.max(before, C.FREE_SALES_LIMIT));
     const added = result.length - before;
     state.sales = result; pending = null;
-    if (added > 0) state.taxYear = C.taxYearOf(state.sales[state.sales.length - 1].date);
+    if (added > 0) state.taxYear = C.taxYearsIn(state.sales)[0];
     save(); render();
     toast(`Added ${added} sale${added === 1 ? '' : 's'}${merged.duplicates ? `, skipped ${merged.duplicates} already here` : ''}.` + (merged.added > added ? ` Unlock to import the other ${merged.added - added}.` : ''));
+  });
+
+  // ---------- Vinted paste ----------
+  function openVinted() {
+    $('vinted-text').value = '';
+    $('vinted-preview').textContent = 'Only lines starting with "Sold" are imported. Withdrawals and purchases are ignored.';
+    $('vinted-dlg').showModal();
+  }
+  $('vinted-text').addEventListener('input', () => {
+    const { sales, skipped } = C.parseVintedHistory($('vinted-text').value);
+    const total = sales.reduce((a, x) => a + x.amount, 0);
+    $('vinted-preview').textContent = sales.length
+      ? `Found ${sales.length} sale${sales.length === 1 ? '' : 's'} (${gbp(total)}), ${sales[sales.length - 1].date.split('-').reverse().join('/')} to ${sales[0].date.split('-').reverse().join('/')}.` + (skipped ? ` ${skipped} couldn't be read.` : '')
+      : 'No sales found yet. Copy the whole Payment history page for a month, then paste it here.';
+  });
+  $('vinted-form').addEventListener('submit', (e) => {
+    if (!e.submitter || e.submitter.value !== 'ok') return;
+    const { sales } = C.parseVintedHistory($('vinted-text').value);
+    if (!sales.length) { e.preventDefault(); $('vinted-preview').textContent = 'No sales found. Make sure you copied a Payment history month that has "Sold" entries.'; return; }
+    const before = state.sales.length;
+    const merged = C.mergeSales(state.sales, sales);
+    const result = unlocked() ? merged.sales : merged.sales.slice(0, Math.max(before, C.FREE_SALES_LIMIT));
+    const added = result.length - before;
+    state.sales = result;
+    if (added > 0) state.taxYear = C.taxYearsIn(state.sales)[0];
+    save(); render();
+    toast(`Added ${added} Vinted sale${added === 1 ? '' : 's'}${merged.duplicates ? `, skipped ${merged.duplicates} already here` : ''}.` + (merged.added > added ? ` Unlock to import the other ${merged.added - added}.` : ''));
   });
 
   // ---------- Manual add ----------
@@ -203,6 +230,7 @@
     if (act) {
       const a = act.dataset.action;
       if (a === 'add') openAdd();
+      else if (a === 'vinted') openVinted();
       else if (a === 'example') example();
       else if (a === 'export') exportSummary();
       else if (a === 'print') printSummary();
