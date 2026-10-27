@@ -1,8 +1,9 @@
 import type { ComponentType } from 'react';
+import GuideFirstTime from './site/GuideFirstTime';
 import GuideTaxYear from './site/GuideTaxYear';
 import GuideThirtySales from './site/GuideThirtySales';
 import GuideVinted from './site/GuideVinted';
-import { TAX_YEAR, THIRTY_SALES, VINTED } from './site/guides';
+import { FIRST_TIME, TAX_YEAR, THIRTY_SALES, VINTED } from './site/guides';
 import type { PageHead } from './site/head';
 import Home from './site/Home';
 import Privacy from './site/Privacy';
@@ -24,4 +25,5 @@ export const PAGES: Record<string, { file: string; Component: ComponentType; hea
   vinted: { file: VINTED.path.slice(1), Component: GuideVinted, head: VINTED },
   thirtySales: { file: THIRTY_SALES.path.slice(1), Component: GuideThirtySales, head: THIRTY_SALES },
   taxYear: { file: TAX_YEAR.path.slice(1), Component: GuideTaxYear, head: TAX_YEAR },
+  firstTime: { file: FIRST_TIME.path.slice(1), Component: GuideFirstTime, head: FIRST_TIME },
 };

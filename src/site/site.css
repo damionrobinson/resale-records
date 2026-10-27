@@ -140,3 +140,17 @@ input[type="number"] { width: 100%; min-height: 2.75rem; padding: 0 0.7rem; bord
 .guide .ticket h2, .guide .ticket p { margin: 0; }
 .guide .ticket p { color: var(--ink-soft); }
 .guide .faq summary { font-size: 1rem; }
+
+/* Four guides on the home page: two columns, one on phones */
+.grid3.guides { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 820px) { .grid3.guides { grid-template-columns: minmax(0, 1fr); } }
+
+/* Glossary (brief 002): "What's this?" toggles and the guide's word list */
+.term-toggle { background: none; border: 0; padding: 0; font: 600 0.8em/1 var(--body); color: var(--accent); text-decoration: underline dotted; cursor: pointer; }
+/* Inline, so an opened definition sits inside the sentence and its full stop stays put */
+.term-def { padding: 0.05rem 0.3rem; border-radius: 3px; background: var(--paper); color: var(--ink); font-size: 0.95em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.term-def[hidden] { display: none; }
+.glossary { margin: 0; display: grid; gap: 0.6rem; }
+.glossary div { display: grid; gap: 0.15rem; }
+.glossary dt { font-weight: 700; color: var(--ink); }
+.glossary dd { margin: 0; color: var(--ink-soft); }

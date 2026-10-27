@@ -100,6 +100,18 @@ describe('summaries', () => {
   });
 });
 
+describe('first-time filers', () => {
+  it('registration date and filing deadline come from the tax year', () => {
+    expect(C.selfAssessmentDates('2025/26')).toEqual({ registerBy: '2026-10-05', fileAndPayBy: '2027-01-31' });
+    expect(C.selfAssessmentDates('2026/27')).toEqual({ registerBy: '2027-10-05', fileAndPayBy: '2028-01-31' });
+  });
+  it('the £1,000 statement: over only above £1,000', () => {
+    expect(C.allowanceStatement(0)).toBe('not-over');
+    expect(C.allowanceStatement(1000)).toBe('not-over');
+    expect(C.allowanceStatement(1000.01)).toBe('over');
+  });
+});
+
 describe('tax year record', () => {
   const sales = [
     sale({ platform: 'Vinted', date: '2025-04-06', amount: 600, cost: 200, kind: 'resale' }),

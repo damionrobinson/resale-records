@@ -2,6 +2,7 @@ import { useState } from 'react';
 import * as C from '../../core';
 import type { Kind, Sale } from '../../core';
 import { gbp, ukDate } from '../state';
+import FirstTime from './FirstTime';
 
 const GOV_REPORTING = 'https://www.gov.uk/guidance/reporting-rules-for-digital-platforms';
 const GOV_ALLOWANCE = 'https://www.gov.uk/guidance/tax-free-allowances-on-property-and-trading-income';
@@ -50,6 +51,7 @@ export function Summary({ sales, taxYear, calYear, setTaxYear, setCalYear, onOpe
       {s.missingCost > 0 && <div className="callout info">{s.missingCost} resale {s.missingCost === 1 ? 'sale is' : 'sales are'} missing what you paid, so profit is overstated.</div>}
       {s.overTradingAllowance && <div className="callout">Your bought-to-resell takings are over £{C.TRADING_ALLOWANCE.toLocaleString('en-GB')}, the trading allowance limit. <a href={GOV_ALLOWANCE} target="_blank" rel="noopener">GOV.UK explains what that means</a>.</div>}
       <button className="btn" type="button" onClick={onOpenRecord}>View tax year record</button>
+      <FirstTime taxYear={taxYear} takings={s.resale} unsortedCount={s.unsortedCount} />
 
       <div className="toolbar">
         <h2>Platform reports</h2>

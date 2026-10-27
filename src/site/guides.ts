@@ -52,4 +52,20 @@ export const TAX_YEAR: Guide = {
   ],
 };
 
-export const GUIDES: Guide[] = [VINTED, THIRTY_SALES, TAX_YEAR];
+export const FIRST_TIME: Guide = {
+  key: 'first-time',
+  path: '/first-tax-return-selling-online.html',
+  type: 'article',
+  title: 'First tax return for online sellers · Resale Records',
+  description: 'Never done a tax return and sell on Vinted, eBay, Etsy or Depop? The £1,000 rule, the 5 October and 31 January dates and the steps, from GOV.UK.',
+  h1: 'Never done a tax return? What Vinted, eBay, Etsy and Depop sellers need to know',
+  blurb: 'The £1,000 rule, the dates that matter for 2025/26, what happens if you’re late, and the steps in order.',
+  faqs: [
+    { q: 'Do I need to do a tax return if I sell on Vinted?', a: 'It depends on whether you’re trading and on your gross trading income. GOV.UK says you must tell HMRC about gross trading income over £1,000 by registering for Self Assessment. Selling your own unwanted things occasionally is treated differently, and HMRC’s online checker can help you work out which applies.' },
+    { q: 'When do I need to register for Self Assessment?', a: 'For a first tax return for the 2025/26 tax year, GOV.UK says you must tell HMRC by 5 October 2026. Telling HMRC after that date could mean a penalty.' },
+    { q: 'When is the deadline to file and pay for 2025/26?', a: '31 January 2027, for an online return and for paying any tax due.' },
+    { q: 'What happens if I file or pay late?', a: 'GOV.UK lists a £100 penalty for a late return, then daily penalties of £10 after 3 months (up to £900), then 5% of the tax due or £300, whichever is greater, at 6 and 12 months. Paying late adds 5% of the unpaid tax at 30 days, 6 months and 12 months, plus interest.' },
+  ],
+};
+
+export const GUIDES: Guide[] = [VINTED, THIRTY_SALES, TAX_YEAR, FIRST_TIME];

@@ -142,7 +142,7 @@ export default function Home() {
         <section className="plain" id="guides">
           <div className="wrap">
             <div className="head"><span className="label">Guides</span><h2>The rules, explained</h2></div>
-            <ul className="grid3">
+            <ul className="grid3 guides">
               {GUIDES.map((g) => <li key={g.key}><h3><a href={g.path}>{g.h1}</a></h3><p>{g.blurb}</p></li>)}
             </ul>
           </div>
