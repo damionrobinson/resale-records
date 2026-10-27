@@ -27,6 +27,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
   const byPlatformKind = (p: string, k: Sale['kind']) => r.sales.filter((x) => x.platform === p && x.kind === k).reduce((a, x) => a + x.amount, 0);
   const complete = s.unsortedCount === 0 && s.missingCost === 0;
   const today = new Date();
+  const capped = !unlocked && sales.length >= C.FREE_SALES_LIMIT; // some sales may not be here yet
 
   return (
     <div className="record-view">
@@ -117,7 +118,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
                 {c.rows.length ? (
                   <table className="rec-tab">
                     <thead><tr><th>Platform</th><th>Sales</th><th>Total</th><th>Reported?</th></tr></thead>
-                    <tbody>{c.rows.map((x) => <tr key={x.platform}><td>{x.platform}</td><td>{x.count}</td><td>{gbp(x.total)}</td><td>{x.reported ? 'Yes' : 'No'}</td></tr>)}</tbody>
+                    <tbody>{c.rows.map((x) => <tr key={x.platform}><td>{x.platform}</td><td>{x.count}</td><td>{gbp(x.total)}</td><td>{x.reported ? 'Yes' : capped ? 'Can’t tell' : 'No'}</td></tr>)}</tbody>
                   </table>
                 ) : <p className="rec-note">No sales recorded.</p>}
               </div>

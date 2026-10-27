@@ -5,6 +5,7 @@ export const CONTACT = 'info@designdefinition.info';
 export const COMPANY = 'Design Definition Limited';
 export const COMPANY_NUMBER = '15183622';
 export const REGISTERED_OFFICE = '27 Old Gloucester Street, London, England, WC1N 3AX';
+export const TAXAID = 'https://taxaid.org.uk/i-need-help-with-tax'; // tax charity for people who can't afford an adviser
 export const GOV = {
   reporting: 'https://www.gov.uk/guidance/reporting-rules-for-digital-platforms',
   allowance: 'https://www.gov.uk/guidance/tax-free-allowances-on-property-and-trading-income',

@@ -34,6 +34,8 @@ describe('dates and money', () => {
     expect(C.parseMoney('1.250,50')).toBe(1250.5);
     expect(C.parseMoney('(3.20)')).toBe(-3.2);
     expect(C.parseMoney('abc')).toBeNaN();
+    expect(C.parseMoney('1 234,56')).toBe(1234.56);
+    expect(C.parseMoney('1,234')).toBe(1234);
   });
 });
 
@@ -49,6 +51,12 @@ describe('imports', () => {
     expect(sales.map((s) => C.taxYearOf(s.date))).toEqual(['2025/26', '2026/27', '2025/26']);
     expect(sales[2].amount).toBe(1250);
     expect(sales[0].fees).toBe(1.2);
+  });
+  it('Etsy: takes refunds off Order Value using Adjusted Order Total', () => {
+    const csv = 'Sale Date,Order ID,Order Value,Order Total,Adjusted Order Total\n04/05/26,1,25.00,28.50,\n04/06/26,2,40.00,44.00,0\n04/07/26,3,40.00,44.00,34.00';
+    const { headers, records } = C.parseCSV(csv);
+    const sales = C.recordsToSales(records, C.guessMapping(headers, 'EtsySoldOrders.csv'), 'MDY').sales;
+    expect(sales.map((s) => s.amount)).toEqual([25, 0, 30]);
   });
   it('eBay: detects platform and removes the duplicate row', () => {
     const { headers, records } = C.parseCSV(data('ebay-orders-sample.csv'));
@@ -76,6 +84,19 @@ describe('imports', () => {
     expect(again).toMatchObject({ added: 0, duplicates: 3 });
     expect(C.parseVintedHistory('Sold\nNo price or date here').skipped).toBe(1);
   });
+  it('Vinted paste also reads +£ amounts, dd/mm/yyyy dates, Today and Yesterday', () => {
+    const today = new Date(2026, 9, 26);
+    const { sales } = C.parseVintedHistory('Sold\nA\n+£5.00\nToday\nSold\nB\n£6.00\nYesterday\nSold\nC\n£1,234.50\n10/08/2024', today);
+    expect(sales.map((s) => [s.date, s.amount])).toEqual([['2026-10-26', 5], ['2026-10-25', 6], ['2024-08-10', 1234.5]]);
+  });
+  it('overlapping files without order numbers don\'t double up, and repeats within a file are kept', () => {
+    const map = { platform: 'Depop', date: 'Date of sale', amount: 'Item price', item: 'Item description', orderId: '', fees: '' };
+    const read = (csv: string) => C.recordsToSales(C.parseCSV(csv).records, map, 'DMY').sales;
+    const first = read('Date of sale,Item description,Item price\n01/03/2026,Sticker,2\n01/03/2026,Sticker,2\n02/03/2026,Y,6');
+    const second = read('Date of sale,Item description,Item price\n28/02/2026,W,4\n01/03/2026,Sticker,2\n01/03/2026,Sticker,2\n02/03/2026,Y,6');
+    expect(first).toHaveLength(3);
+    expect(C.mergeSales(first, second)).toMatchObject({ added: 1, duplicates: 3 });
+  });
 });
 
 describe('summaries', () => {
@@ -97,6 +118,15 @@ describe('summaries', () => {
     ];
     const s = C.taxYearSummary(sales, '2025/26');
     expect(s).toMatchObject({ count: 3, resale: 1100, resaleProfit: 730, missingCost: 1, personal: 40, overTradingAllowance: true });
+  });
+  it('refunds and cancelled orders net off the totals but are not counted as sales', () => {
+    const sales = [
+      sale({ date: '2026-03-01', amount: 10, kind: 'resale' }),
+      sale({ date: '2026-03-02', amount: -10, kind: 'resale' }),
+      sale({ date: '2026-03-03', amount: 0 }),
+    ];
+    expect(C.reportingCheck(sales, 2026)[0]).toMatchObject({ count: 1, total: 0 });
+    expect(C.taxYearSummary(sales, '2025/26')).toMatchObject({ count: 1, resale: 0, missingCost: 1, unsortedCount: 0 });
   });
 });
 

@@ -46,6 +46,11 @@ export default function App() {
   useEffect(() => {
     document.body.classList.toggle('is-locked', !unlocked);
   }, [unlocked]);
+  // Ask the browser not to clear our storage on its own (Safari otherwise can, after 7 days without a visit).
+  const hasSales = state.sales.length > 0;
+  useEffect(() => {
+    if (hasSales) navigator.storage?.persist?.().catch(() => {});
+  }, [hasSales]);
 
   const patch = (p: Partial<AppState>) => setState((s) => ({ ...s, ...p }));
   const openUnlock = (reason = '') => { setUnlockReason(reason); setDialog('unlock'); };
@@ -115,6 +120,12 @@ export default function App() {
   const addOne = () => (room <= 0 ? openUnlock(`The free version holds ${C.FREE_SALES_LIMIT} sales.`) : setDialog('add'));
 
   const has = state.sales.length > 0;
+  const backup = () => {
+    download('resale-records-backup.json', JSON.stringify({ app: 'resale-records', version: 1, sales: state.sales }, null, 1), 'application/json');
+    patch({ backup: { at: C.localISO(new Date()), count: state.sales.length } });
+  };
+  const needsBackup = has && state.sales[0]?.source !== 'example' && state.backup?.count !== state.sales.length;
+  const capped = has && !unlocked && state.sales.length >= C.FREE_SALES_LIMIT;
   return (
     <>
       <header className="top no-print">
@@ -130,6 +141,12 @@ export default function App() {
 
       <main className="wrap">
         {!has && <EmptyState onImportFile={readFile} onVinted={() => setDialog('vinted')} onAdd={addOne} onExample={example} />}
+        {has && view === 'sales' && (capped || needsBackup) && (
+          <div className="app-notes">
+            {capped && <p className="callout info">The free version holds {C.FREE_SALES_LIMIT} sales, so the totals and platform reports below only cover these {C.FREE_SALES_LIMIT}. <button className="linklike" type="button" onClick={() => openUnlock()}>Unlock to add the rest</button>.</p>}
+            {needsBackup && <p className="callout info">Your sales are only stored in this browser. Safari and some other browsers can delete them if you don’t open this site for a week or so. <button className="linklike" type="button" onClick={backup}>Download a backup</button>{state.backup ? ` (last one ${state.backup.at.split('-').reverse().join('/')})` : ''}.</p>}
+          </div>
+        )}
         {has && view === 'sales' && (
           <div className="work">
             {[Summary, SalesTable].map((Panel, i) => (
@@ -137,7 +154,7 @@ export default function App() {
                 setTaxYear={(y) => patch({ taxYear: y })} setCalYear={(y) => patch({ calYear: y })}
                 update={update} remove={(id) => patch({ sales: state.sales.filter((x) => x.id !== id) })}
                 onOpenRecord={() => setView('record')} onImportFile={readFile} onVinted={() => setDialog('vinted')} onAdd={addOne}
-                onExportCSV={exportCSV} onBackup={() => download('resale-records-backup.json', JSON.stringify({ app: 'resale-records', version: 1, sales: state.sales }, null, 1), 'application/json')}
+                onExportCSV={exportCSV} onBackup={backup} capped={capped}
                 onRestore={restore} onClear={() => { patch({ sales: [] }); say('All data deleted from this device.'); }} />
             ))}
           </div>

@@ -6,6 +6,23 @@ import Modal from './Modal';
 
 const PLATFORMS = ['Etsy', 'eBay', 'Depop', 'Vinted', 'Other'];
 
+/** The platform report check for everything in a file or paste, before the free limit cuts it down,
+ *  so a free user with 45 Vinted sales never sees "not yet" for the 20 we keep. */
+function FileReportCheck({ sales }: { sales: Sale[] }) {
+  const years = [...new Set(sales.map((s) => C.calendarYearOf(s.date)))].sort().reverse();
+  if (!years.length) return null;
+  return (
+    <div>
+      <span className="label">Platform reports, from everything here</span>
+      <ul className="file-check">
+        {years.flatMap((y) => C.reportingCheck(sales, y).map((r) => (
+          <li key={`${y}|${r.platform}`}>{r.platform} {y}: {r.count} sale{r.count === 1 ? '' : 's'}, {gbp(r.total)} · <strong>{r.reported ? 'over the reporting limits' : r.near ? 'close to the limits' : 'under the limits'}</strong></li>
+        )))}
+      </ul>
+    </div>
+  );
+}
+
 // ---------- File import with column check ----------
 export interface PendingFile { name: string; headers: string[]; records: CsvRecord[] }
 
@@ -50,6 +67,7 @@ export function ImportDialog({ file, room, onClose, onImport }: {
           {parsed.skipped.length > 0 && `\n${parsed.skipped.length} row(s) without a readable date or amount will be skipped.`}
         </div>
       </div>
+      <FileReportCheck sales={parsed.sales} />
       {room < parsed.sales.length && <p className="notice">The free version holds {C.FREE_SALES_LIMIT} sales. {room} more will be imported; unlock to import all {parsed.sales.length}.</p>}
     </Modal>
   );
@@ -74,9 +92,10 @@ export function VintedDialog({ open, onClose, onImport }: { open: boolean; onClo
       </label>
       <p className="notice" role="status">
         {sales.length
-          ? `Found ${sales.length} sale${sales.length === 1 ? '' : 's'} (${gbp(total)}), ${ukDate(sales[sales.length - 1].date)} to ${ukDate(sales[0].date)}.${skipped ? ` ${skipped} couldn't be read.` : ''}`
+          ? `Found ${sales.length} sale${sales.length === 1 ? '' : 's'} (${gbp(total)}), ${ukDate(sales.reduce((a, s) => (s.date < a ? s.date : a), sales[0].date))} to ${ukDate(sales.reduce((a, s) => (s.date > a ? s.date : a), sales[0].date))}.${skipped ? ` ${skipped} couldn't be read.` : ''}`
           : text ? 'No sales found yet. Copy a Payment history month that has "Sold" entries.' : 'Only entries starting with "Sold" are imported. Withdrawals and purchases are ignored.'}
       </p>
+      <FileReportCheck sales={sales} />
     </Modal>
   );
 }

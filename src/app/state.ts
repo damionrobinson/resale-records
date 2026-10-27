@@ -8,6 +8,8 @@ export interface AppState {
   code: string;
   taxYear: string;
   calYear: number;
+  /** When the user last downloaded a backup, and how many sales it held. */
+  backup?: { at: string; count: number };
 }
 
 export function loadState(): AppState {
