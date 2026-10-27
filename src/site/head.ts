@@ -9,6 +9,8 @@ export type PageHead = {
   path: string; // e.g. '/' or '/hmrc-30-sales-rule.html'
   type: 'website' | 'article';
   faqs?: Faq[]; // shown on the page too; the structured data must match what readers see
+  ogTitle?: string; // when link previews should differ from the <title>
+  ogDescription?: string;
 };
 
 const attr = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -23,8 +25,8 @@ export function renderHead(h: PageHead): string {
     `<meta property="og:site_name" content="Resale Records">`,
     `<meta property="og:locale" content="en_GB">`,
     `<meta property="og:url" content="${url}">`,
-    `<meta property="og:title" content="${attr(h.title)}">`,
-    `<meta property="og:description" content="${attr(h.description)}">`,
+    `<meta property="og:title" content="${attr(h.ogTitle ?? h.title)}">`,
+    `<meta property="og:description" content="${attr(h.ogDescription ?? h.description)}">`,
   ];
   if (h.faqs?.length) {
     const ld = {

@@ -14,6 +14,7 @@ export default defineConfig({
         thirtySales: resolve(__dirname, 'hmrc-30-sales-rule.html'),
         taxYear: resolve(__dirname, 'tax-year-vs-calendar-year-selling-online.html'),
         firstTime: resolve(__dirname, 'first-tax-return-selling-online.html'),
+        vintedMessage: resolve(__dirname, 'vinted-hmrc-message.html'),
         privacy: resolve(__dirname, 'privacy.html'),
         thanks: resolve(__dirname, 'thanks.html'),
         app: resolve(__dirname, 'app/index.html'),

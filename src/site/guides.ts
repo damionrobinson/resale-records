@@ -68,4 +68,25 @@ export const FIRST_TIME: Guide = {
   ],
 };
 
-export const GUIDES: Guide[] = [VINTED, THIRTY_SALES, TAX_YEAR, FIRST_TIME];
+// Brief 005: copy from docs/outreach/drafts/G-007 "Page A", word for word, with the brief's settled changes.
+// The FAQ answers are the opening text of each page section (no separate FAQ block on this page).
+export const VINTED_MESSAGE: Guide = {
+  key: 'vinted-message',
+  path: '/vinted-hmrc-message.html',
+  type: 'article',
+  title: 'Vinted sent me an HMRC message: what now? · Resale Records',
+  description: 'Vinted asks sellers with 30+ sales or over €2,000 to fill in an HMRC form. What it means, why it isn’t a tax bill, and what GOV.UK says to check next.',
+  ogTitle: 'Vinted sent me an HMRC message: what now?',
+  ogDescription: 'Being reported isn’t a tax bill. What the message means and what to check next, with GOV.UK’s rules.',
+  h1: 'Vinted sent me an HMRC message: what now?',
+  blurb: 'What the message means, why it isn’t a tax bill, and what GOV.UK says to check next.',
+  faqs: [
+    { q: 'Why has Vinted asked me for information for HMRC?', a: 'Since 1 January 2024, online platforms, Vinted included, have had to report sellers’ details and sales to HMRC. Each report covers a calendar year (January to December) and goes to HMRC by 31 January the following year.' },
+    { q: 'Does it mean I owe tax?', a: 'No. Being reported is information, not a tax bill. Vinted says the same: meeting the requirements “doesn’t mean you have to pay taxes on your Vinted sales”. HMRC says a platform sharing your sales data “does not automatically mean” you need to complete a tax return. Whether you need to tell HMRC depends on whether you’re trading and on your gross trading income.' },
+    { q: 'Do I have to pay tax on my Vinted sales?', a: 'HMRC says a platform sharing your sales data “does not automatically mean” you need to complete a tax return. GOV.UK says if you’re selling personal possessions you “probably do not have to pay Income Tax”, but you’re “probably trading” if you sell goods you bought intending to sell for a profit. Whether you need to tell HMRC depends on whether you’re trading and on your gross trading income: HMRC’s checker can help.' },
+    { q: 'Is selling my old clothes on Vinted trading?', a: 'GOV.UK draws the line like this: if you’re selling personal possessions, you “probably do not have to pay Income Tax”. If you sell goods you bought intending to sell for a profit, you’re “probably trading”.' },
+    { q: 'How much can I sell before I need to tell HMRC?', a: 'The trading allowance is £1,000 of gross trading income (your takings, before costs) per tax year. GOV.UK says that above that you tell HMRC by registering for Self Assessment. On a return you can deduct the £1,000 allowance or your actual costs, not both.' },
+  ],
+};
+
+export const GUIDES: Guide[] = [VINTED, THIRTY_SALES, TAX_YEAR, FIRST_TIME, VINTED_MESSAGE];

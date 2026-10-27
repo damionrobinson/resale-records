@@ -154,3 +154,7 @@ input[type="number"] { width: 100%; min-height: 2.75rem; padding: 0 0.7rem; bord
 .glossary div { display: grid; gap: 0.15rem; }
 .glossary dt { font-weight: 700; color: var(--ink); }
 .glossary dd { margin: 0; color: var(--ink-soft); }
+
+/* Brief 005: the checker sits inside the article column, and the page ends with its own disclaimer line */
+.guide .doc .checker { margin-block: 0.5rem 1rem; }
+.guide .doc .disclaimer { font-size: 0.9rem; }

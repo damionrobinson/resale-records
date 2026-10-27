@@ -7,7 +7,7 @@ export default function GuideFirstTime() {
   return (
     <GuidePage
       guide={FIRST_TIME}
-      answer={<>If your gross trading income is over £1,000 in a tax year, GOV.UK says you must tell HMRC by registering for Self Assessment. <Gov href="https://www.gov.uk/government/news/no-tax-changes-for-online-sellers">HMRC says</Gov> a platform sharing your sales data “does not automatically mean” you need to complete a tax return. Whether you need to tell HMRC depends on whether you’re trading and on your gross trading income: <Gov href={GOV.additionalIncome}>HMRC’s checker</Gov> can help.</>}
+      answer={<>If your gross trading income is over £1,000 in a tax year, GOV.UK says you must tell HMRC by registering for Self Assessment. <Gov href={GOV.hmrcNoTaxChanges}>HMRC says</Gov> a platform sharing your sales data “does not automatically mean” you need to complete a tax return. Whether you need to tell HMRC depends on whether you’re trading and on your gross trading income: <Gov href={GOV.additionalIncome}>HMRC’s checker</Gov> can help.</>}
     >
       <h2>Does this apply to you?</h2>
       <p>GOV.UK says you’re likely to be trading if you sell regularly to make a profit, or make items to sell for profit. Occasionally selling your own unwanted things is treated differently. If you’re not sure which describes you, <Gov href={GOV.additionalIncome}>HMRC’s online checker</Gov> asks a few questions and tells you whether you need to tell HMRC.</p>
