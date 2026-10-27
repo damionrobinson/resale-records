@@ -34,13 +34,13 @@ export default function ReportChecker() {
         <ul>
           {active.length ? active.map((r) => (
             <li key={r.p}>
-              <span className={r.yes ? 'yes' : 'no'}>{r.p}: {r.yes ? 'will report you' : r.near ? 'close to the limit' : 'won’t report you yet'}</span>
+              <span className={r.yes ? 'yes' : 'no'}>{r.p}: {r.yes ? 'over the limit: it has to report you' : r.near ? 'close to the limit' : 'under the limit'}</span>
               {' · '}{r.n} sales, £{r.t.toLocaleString('en-GB')}
             </li>
           )) : <li>Enter your sales above.</li>}
         </ul>
         <p>{active.some((r) => r.yes)
-          ? 'Being reported doesn’t mean you owe tax. It means HMRC will see these totals, so it’s worth having a record that explains them.'
+          ? 'Over the limit means the platform has to report you to HMRC. That doesn’t mean you owe tax. HMRC will see these totals, so it’s worth having a record that explains them.'
           : 'Limits apply to each platform separately: 30 sales, or more than about £1,700, in a calendar year.'}</p>
       </div>
     </div>
