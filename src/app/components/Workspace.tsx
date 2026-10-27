@@ -35,6 +35,7 @@ export function Summary({ sales, taxYear, calYear, setTaxYear, setCalYear, onOpe
   const s = C.taxYearSummary(sales, taxYear);
   const start = C.taxYearStart(taxYear);
   const rep = C.reportingCheck(sales, calYear);
+  const feeGaps = C.incompleteFeePlatforms(sales, taxYear);
   return (
     <aside className="panel">
       <div className="toolbar">
@@ -46,6 +47,7 @@ export function Summary({ sales, taxYear, calYear, setTaxYear, setCalYear, onOpe
         <div><span>Bought to resell</span><span className="big">{gbp(s.resale)}</span></div>
         <div><span>What you paid</span><span>{gbp(s.resaleCost)}</span></div>
         <div><span>Platform fees</span><span>{gbp(s.resaleFees)}</span></div>
+        {feeGaps.length > 0 && <p className="kv-note">{C.listWords(feeGaps)} fees may be incomplete, so profit may be too high. Check your platform’s statement.</p>}
         <div className="sep"><strong>Resale profit</strong><strong>{gbp(s.resaleProfit)}</strong></div>
         <div className="sep"><span>Personal clear-out</span><span>{gbp(s.personal)}</span></div>
         <div><span>Not sorted yet</span><span>{gbp(s.unsorted)}</span></div>
@@ -68,7 +70,7 @@ export function Summary({ sales, taxYear, calYear, setTaxYear, setCalYear, onOpe
             <strong>{r.platform}</strong>
             <span>{r.count} sale{r.count === 1 ? '' : 's'} · {gbp(r.total)}</span>
             {/* With the free limit full we can't say "not yet": the sales we didn't keep might cross the limit */}
-            <span className={`chip ${r.reported ? 'flag' : r.near || capped ? '' : 'ok'}`}>{r.reported ? 'Will report' : capped ? 'Can’t tell' : r.near ? 'Close' : 'Not yet'}</span>
+            <span className={`chip ${r.reported ? 'flag' : r.near || capped ? '' : 'ok'}`}>{r.reported ? 'Over the limit' : capped ? 'Can’t tell' : r.near ? 'Close' : 'Not yet'}</span>
           </div>
         )) : <p className="notice">No sales in this year.</p>}
       </div>

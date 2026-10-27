@@ -130,6 +130,23 @@ describe('summaries', () => {
   });
 });
 
+describe('missing fees notice', () => {
+  it('names only file-imported Etsy, eBay and Depop resale sales in the tax year', () => {
+    const sales = [
+      sale({ platform: 'Etsy', date: '2025-06-01', kind: 'resale', source: 'import' }),
+      sale({ platform: 'eBay', date: '2025-07-01', kind: 'resale', source: 'manual' }),
+      sale({ platform: 'Vinted', date: '2025-07-01', kind: 'resale', source: 'vinted-paste' }),
+      sale({ platform: 'Depop', date: '2025-08-01', kind: 'personal', source: 'import' }),
+      sale({ platform: 'eBay', date: '2026-05-01', kind: 'resale', source: 'import' }),
+    ];
+    expect(C.incompleteFeePlatforms(sales, '2025/26')).toEqual(['Etsy']);
+    expect(C.incompleteFeePlatforms(sales, '2026/27')).toEqual(['eBay']);
+    expect(C.incompleteFeePlatforms(sales.filter((s) => s.source !== 'import'), '2025/26')).toEqual([]);
+    expect(C.listWords(['Etsy', 'eBay', 'Depop'])).toBe('Etsy, eBay and Depop');
+    expect(C.listWords(['Etsy', 'eBay'])).toBe('Etsy and eBay');
+  });
+});
+
 describe('first-time filers', () => {
   it('registration date and filing deadline come from the tax year', () => {
     expect(C.selfAssessmentDates('2025/26')).toEqual({ registerBy: '2026-10-05', fileAndPayBy: '2027-01-31' });

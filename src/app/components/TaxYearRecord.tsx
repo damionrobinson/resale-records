@@ -29,6 +29,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
   const complete = s.unsortedCount === 0 && s.missingCost === 0;
   const today = new Date();
   const capped = !unlocked && sales.length >= C.FREE_SALES_LIMIT; // some sales may not be here yet
+  const feeGaps = C.incompleteFeePlatforms(sales, taxYear);
 
   return (
     <div className="record-view">
@@ -73,6 +74,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
               <tr><th>Takings from items bought to resell</th><td>{gbp(s.resale)}</td></tr>
               <tr><th>Less: what you paid for those items</th><td>{gbp(-s.resaleCost)}</td></tr>
               <tr><th>Less: platform fees</th><td>{gbp(-s.resaleFees)}</td></tr>
+              {feeGaps.length > 0 && <tr className="note"><td colSpan={2}>Fees may be incomplete for {C.listWords(feeGaps)} sales imported from a file. These files don’t include every fee, so profit with actual costs may be too high. Check your platform’s statement.</td></tr>}
               <tr className="total"><th>Profit using actual costs</th><td>{gbp(r.actualCostsProfit)}</td></tr>
             </tbody>
           </table>
@@ -91,7 +93,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
 
         <section className="rec-sec">
           <h2><span>2</span>Figures you’ll be asked for</h2>
-          <FiguresAskedFor takings={s.resale} cost={s.resaleCost} fees={s.resaleFees} />
+          <FiguresAskedFor takings={s.resale} cost={s.resaleCost} fees={s.resaleFees} feeGaps={feeGaps} />
           <p className="rec-note">Plain-English names for the figures, not form box numbers. Check the form and GOV.UK guidance as you fill it in.</p>
         </section>
 
@@ -124,7 +126,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
                 <h3>Calendar year {c.year}{c.year === today.getFullYear() ? ' (so far)' : ''}</h3>
                 {c.rows.length ? (
                   <table className="rec-tab">
-                    <thead><tr><th>Platform</th><th>Sales</th><th>Total</th><th>Reported?</th></tr></thead>
+                    <thead><tr><th>Platform</th><th>Sales</th><th>Total</th><th>Over the limit?</th></tr></thead>
                     <tbody>{c.rows.map((x) => <tr key={x.platform}><td>{x.platform}</td><td>{x.count}</td><td>{gbp(x.total)}</td><td>{x.reported ? 'Yes' : capped ? 'Can’t tell' : 'No'}</td></tr>)}</tbody>
                   </table>
                 ) : <p className="rec-note">No sales recorded.</p>}

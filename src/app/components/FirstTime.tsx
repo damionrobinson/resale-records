@@ -43,11 +43,11 @@ export default function FirstTime({ taxYear, takings, unsortedCount, capped = fa
 }
 
 /** "Figures you'll be asked for", in plain words, for the tax year record. No Self Assessment box numbers. */
-export function FiguresAskedFor({ takings, cost, fees }: { takings: number; cost: number; fees: number }) {
+export function FiguresAskedFor({ takings, cost, fees, feeGaps = [] }: { takings: number; cost: number; fees: number; feeGaps?: string[] }) {
   return (
     <ul className="ft-figures">
       <li><strong>Takings</strong> from items bought to resell: {gbp(takings)}.</li>
-      <li>If you use your <strong>actual costs</strong>: what you paid for those items, {gbp(cost)}, plus platform fees, {gbp(fees)}.</li>
+      <li>If you use your <strong>actual costs</strong>: what you paid for those items, {gbp(cost)}, plus platform fees, {gbp(fees)}{feeGaps.length > 0 && ` (may be incomplete for ${C.listWords(feeGaps)}: check your platform’s statement)`}.</li>
       <li><strong>Or instead</strong>, the £1,000 <Term term="trading allowance" />. You can use one or the other, not both.</li>
     </ul>
   );

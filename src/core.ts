@@ -306,6 +306,18 @@ export function reportingCheck(sales: Sale[], year: number): ReportRow[] {
   }).sort((a, b) => a.platform.localeCompare(b.platform));
 }
 
+// ---------- Missing fees (brief 003) ----------
+// Etsy's Orders file holds only card processing fees, eBay's orders download holds none, and Depop splits fees over
+// several columns we don't all read. Until there are importers for the full fee files, say so.
+export const FILE_FEES_INCOMPLETE = ['Etsy', 'eBay', 'Depop'];
+/** Platforms whose bought-to-resell sales in this tax year came from a file import, so their fees may be incomplete. */
+export function incompleteFeePlatforms(sales: Sale[], taxYear: string): string[] {
+  const found = new Set(sales.filter((s) => s.kind === 'resale' && s.source === 'import' && FILE_FEES_INCOMPLETE.includes(s.platform) && taxYearOf(s.date) === taxYear).map((s) => s.platform));
+  return FILE_FEES_INCOMPLETE.filter((p) => found.has(p));
+}
+/** 'Etsy', 'Etsy and eBay', 'Etsy, eBay and Depop'. */
+export const listWords = (items: string[]) => (items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`);
+
 // ---------- First-time filers ----------
 /** Self Assessment dates for a tax year, as GOV.UK states them: tell HMRC (register) by 5 October after the tax year
  *  ends, then file online and pay by 31 January after that. For '2025/26': 2026-10-05 and 2027-01-31. */

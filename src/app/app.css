@@ -178,3 +178,7 @@ dialog::backdrop { background: rgb(10 15 13 / 0.55); }
 .record .ft-note { color: #4d5a55; }
 .record .ft-figures { font-size: 9.5pt; }
 @media print { .term-toggle { display: none; } }
+
+/* Missing-fees notes (brief 003) */
+.kv .kv-note { margin: -2px 0 2px; font-size: 0.8rem; color: var(--soft); }
+.rec-fig tr.note td { text-align: left; white-space: normal; font-size: 8.5pt; color: #a3420e; padding: 2px 0 6px; }

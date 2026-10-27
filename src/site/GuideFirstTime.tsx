@@ -53,7 +53,7 @@ export default function GuideFirstTime() {
       <dl className="glossary">
         {Object.entries(GLOSSARY).map(([term, def]) => <div key={term}><dt>{term[0].toUpperCase() + term.slice(1)}</dt><dd>{def}</dd></div>)}
       </dl>
-      <p>If your situation is more complicated, an accountant can help. If you can’t afford one, the charity <Gov href={TAXAID}>TaxAid</Gov> helps people who can’t afford an adviser.</p>
+      <p>If your situation is more complicated, an accountant can help. If you can’t afford one, the charity <Gov href={TAXAID}>TaxAid</Gov> may be able to help.</p>
     </GuidePage>
   );
 }

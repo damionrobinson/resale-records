@@ -23,6 +23,14 @@ function FileReportCheck({ sales }: { sales: Sale[] }) {
   );
 }
 
+/** What this platform's file leaves out of the fees (brief 003). */
+function feeNote(platform: string, feesColumn: string): string {
+  if (platform === 'Etsy') return 'Etsy’s Orders file doesn’t include all your Etsy fees (such as transaction and listing fees). The full list is on your monthly statement.';
+  if (platform === 'eBay') return 'eBay’s orders download doesn’t include eBay’s fees. They’re in eBay’s Transaction report (Payments › Reports).';
+  if (platform === 'Depop') return `We only read the fee column you chose (${feesColumn || 'none'}). Depop files can have more than one fee column, so some fees may be missing.`;
+  return '';
+}
+
 // ---------- File import with column check ----------
 export interface PendingFile { name: string; headers: string[]; records: CsvRecord[] }
 
@@ -68,6 +76,7 @@ export function ImportDialog({ file, room, onClose, onImport }: {
         </div>
       </div>
       <FileReportCheck sales={parsed.sales} />
+      {feeNote(m.platform, m.fees) && <p className="notice">{feeNote(m.platform, m.fees)}</p>}
       {room < parsed.sales.length && <p className="notice">The free version holds {C.FREE_SALES_LIMIT} sales. {room} more will be imported; unlock to import all {parsed.sales.length}.</p>}
     </Modal>
   );
