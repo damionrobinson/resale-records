@@ -25,13 +25,13 @@ export default function Home() {
           <div className="wrap">
             <div className="hero-copy">
               <span className="label">For UK Vinted, eBay, Etsy &amp; Depop sellers</span>
-              <h1>Your sales, sorted into a UK tax-year record before 31 January.</h1>
-              <p className="lede">Platforms now send seller details to HMRC. Resale Records puts every sale in one place, shows which platforms will report you, and keeps your clear-out sales apart from items you bought to resell.</p>
+              <h1>Every sale sorted into the UK tax year, with your clear-outs kept separate.</h1>
+              <p className="lede">Vinted, eBay, Etsy and Depop. No account, no logins: your sales never leave your device. Check free if you’re over the reporting limits.</p>
               <div className="actions">
                 <a className="btn" href="/app/">Try it free</a>
                 <a className="btn ghost" href="#check">Will I be reported? Free check</a>
               </div>
-              <p className="fine">Free for up to 20 sales. Works in your browser; your sales never leave your device. A record-keeping tool, not tax advice.</p>
+              <p className="fine">Free for up to 20 sales, then £19 once. Works in your browser; your sales never leave your device. A record-keeping tool, not tax advice.</p>
             </div>
             <figure className="receipt" aria-label="Example summary">
               <span className="ex">EXAMPLE</span>

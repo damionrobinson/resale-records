@@ -13,7 +13,7 @@ const HOME_HEAD: PageHead = {
   path: '/',
   type: 'website',
   title: 'Resale Records',
-  description: 'Sell on Vinted, eBay, Etsy or Depop? Get your sales into a UK tax-year record before 31 January, and see when each platform reports you to HMRC.',
+  description: 'Vinted, eBay, Etsy and Depop. No account, no logins: your sales never leave your device. Check free if you’re over the reporting limits.',
 };
 
 /** Website pages: pre-rendered to HTML at build time, then made interactive in the browser.
