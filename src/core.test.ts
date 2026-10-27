@@ -52,6 +52,44 @@ describe('imports', () => {
     expect(sales[2].amount).toBe(1250);
     expect(sales[0].fees).toBe(1.2);
   });
+  // Shapes from docs/research/2026-10-27-export-columns.md, with made-up values (no real exports in tests).
+  it('eBay orders file: notes and a blank row above the header, Title Case, quantity, summary and footer rows', () => {
+    const csv = [
+      'Seller Hub orders report, downloaded 13 Aug 2026, one, two, three',
+      '',
+      'Sales Record Number,Order Number,Buyer Username,Item Title,Quantity,Sold For,Total Price,Sale Date,Transaction ID',
+      '201,10-001,b1,,,,$31.00,Aug-13-26,',
+      '201,10-001,b1,Mug,2,$12.00,,Aug-13-26,t1',
+      '201,10-001,b1,Plate,1,$7.00,,Aug-13-26,t2',
+      '2 record(s) downloaded',
+    ].join('\n');
+    const { headers, records } = C.parseCSV(csv);
+    expect(headers[0]).toBe('Sales Record Number');
+    const map = C.guessMapping(headers, 'orders.csv');
+    expect(map).toMatchObject({ platform: 'eBay', amount: 'Sold For', quantity: 'Quantity' });
+    const { sales, skipped } = C.recordsToSales(records, map, 'DMY');
+    expect(sales.map((s) => [s.date, s.amount])).toEqual([['2026-08-13', 24], ['2026-08-13', 7]]);
+    expect(skipped).toHaveLength(2); // the order summary row and the footer
+  });
+  it('Depop: placeholders read as empty, refunds in the row come off the price', () => {
+    const header = 'Date of sale,Time of sale,Date of listing,Bundle,Bundle - amount of items,Buyer,Brand,Description,Size,Item price,Buyer shipping cost,Total,USPS Cost,Depop fee,Depop Payments fee,Buyer Marketplace Fee,Boosting fee,Payment type,Estimated payout date,Payout arrival date,Category,Name,Address Line 1,Address Line 2,City,State,Post Code,Country,US Sales tax,Refunded to buyer amount,Fees refunded to seller';
+    const dash = '"=""-"""';
+    const row = (date: string, price: string, refund: string) =>
+      [`"${date}"`, '"10:00"', '"01/01/2025"', '"No"', dash, '"x"', '"x"', '"Tee"', '"M"', `"${price}"`, '"$3.00"', '"$0"', '"N/A"', dash, '"$0.80"', '"N/A"', '"N/A"',
+        ...Array(12).fill('"x"'), `"${refund}"`, '"N/A"'].join(',');
+    const { headers, records } = C.parseCSV([header, row('10/25/2024', '$20.00', '$0.00'), row('10/26/2024', '$15.00', '$5.00')].join('\n'));
+    const map = C.guessMapping(headers, 'depop.csv');
+    expect(map).toMatchObject({ platform: 'Depop', amount: 'Item price', fees: 'Depop fee' });
+    const order = C.guessDateOrder(records.map((r) => r[map.date]), map.platform);
+    const { sales } = C.recordsToSales(records, map, order);
+    expect(sales.map((s) => [s.date, s.amount, s.fees])).toEqual([['2024-10-25', 20, 0], ['2024-10-26', 10, 0]]);
+  });
+  it('Etsy Orders file with a byte-order mark and $ amounts', () => {
+    const { headers, records } = C.parseCSV('﻿Sale Date,Order ID,Number of Items,Currency,Order Value,Order Total,Card Processing Fees,Adjusted Order Total\n03/03/26,1,3,GBP,$5.00,$7.50,$0.40,');
+    const map = C.guessMapping(headers, 'EtsySoldOrders2026.csv');
+    expect(headers[0]).toBe('Sale Date');
+    expect(C.recordsToSales(records, map, 'MDY').sales.map((s) => [s.date, s.amount, s.fees])).toEqual([['2026-03-03', 5, 0.4]]);
+  });
   it('Etsy: takes refunds off Order Value using Adjusted Order Total', () => {
     const csv = 'Sale Date,Order ID,Order Value,Order Total,Adjusted Order Total\n04/05/26,1,25.00,28.50,\n04/06/26,2,40.00,44.00,0\n04/07/26,3,40.00,44.00,34.00';
     const { headers, records } = C.parseCSV(csv);

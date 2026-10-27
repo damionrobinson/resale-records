@@ -62,8 +62,10 @@ export function parseCSV(input: string): { headers: string[]; records: CsvRecord
   row.push(field);
   if (row.some((v) => v.trim() !== '')) rows.push(row);
   if (!rows.length) return { headers: [], records: [] };
-  // Some exports put a title line above the real header; use the first row with 3+ non-empty cells.
-  let h = rows.findIndex((r) => r.filter((v) => v.trim()).length >= 3);
+  // Some exports put notes or a title above the real header (eBay's Transaction report has several lines). Prefer
+  // the first row with two or more column names we recognise; otherwise the first row with 3+ non-empty cells.
+  let h = rows.findIndex((r) => r.filter((v) => KNOWN_HEADERS.has(norm(v))).length >= 2);
+  if (h < 0) h = rows.findIndex((r) => r.filter((v) => v.trim()).length >= 3);
   if (h < 0) h = 0;
   const headers = rows[h].map((v) => v.trim());
   const records = rows.slice(h + 1).map((r) => Object.fromEntries(headers.map((k, j) => [k, (r[j] || '').trim()])));
@@ -72,6 +74,11 @@ export function parseCSV(input: string): { headers: string[]; records: CsvRecord
 
 // ---------- Column detection ----------
 const norm = (s: string) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+/** Header names from the platforms' sales files (docs/research/2026-10-27-export-columns.md), normalised. */
+const KNOWN_HEADERS = new Set(['sale date', 'order id', 'order value', 'sales record number', 'order number', 'sold for', 'total price',
+  'date of sale', 'item price', 'transaction creation date', 'item title', 'quantity', 'number of items', 'description'].map(norm));
+/** A record's value for a column name, matched without regard to case or punctuation. */
+const cell = (r: CsvRecord, name: string) => { const k = Object.keys(r).find((key) => norm(key) === norm(name)); return k ? r[k] : undefined; };
 type Field = 'date' | 'amount' | 'item' | 'orderId' | 'quantity' | 'fees';
 const FIELD_HINTS: Record<Field, string[]> = {
   date: ['sale date', 'date of sale', 'sold date', 'order date', 'date sold', 'paid on date', 'transaction date', 'date'],
@@ -176,6 +183,12 @@ export function recordsToSales(records: CsvRecord[], map: ColumnMap, dateOrder: 
   records.forEach((r, i) => {
     const date = parseDate(r[map.date], dateOrder);
     let amount = parseMoney(r[map.amount]);
+    // eBay's "Sold for" is the price of one unit, so a line of 2 is twice that.
+    const qty = map.quantity ? Number(r[map.quantity]) : 1;
+    if (map.platform === 'eBay' && norm(map.amount) === 'sold for' && qty > 1) amount *= qty;
+    // Depop keeps refunds in the sale's own row.
+    const depopRefund = parseMoney(cell(r, 'Refunded to buyer amount'));
+    if (map.platform === 'Depop' && depopRefund > 0 && !isNaN(amount)) amount = Math.max(0, amount - depopRefund);
     // Etsy's Orders file leaves refunds out of Order Value. "Adjusted Order Total" is blank with no refund, 0 after a
     // full refund and the remainder after a partial one, so the refund is Order Total minus Adjusted Order Total.
     const adjusted = r['Adjusted Order Total'];
