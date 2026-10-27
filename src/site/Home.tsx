@@ -26,7 +26,7 @@ export default function Home() {
           <div className="wrap">
             <div className="hero-copy">
               <span className="label">For UK Vinted, eBay, Etsy &amp; Depop sellers</span>
-              <h1>Every sale sorted into the UK tax year, with your clear-outs kept separate.</h1>
+              <h1>Every sale sorted into the UK tax year, with your clear‑outs kept separate.</h1>
               <p className="lede">Vinted, eBay, Etsy and Depop. No account, no logins: your sales never leave your device. Check free if you’re over the reporting limits.</p>
               <div className="actions">
                 <a className="btn" href="/app/">Try it free</a>
