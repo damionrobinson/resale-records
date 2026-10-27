@@ -153,7 +153,7 @@ export default function App() {
               <Panel key={i} sales={state.sales} taxYear={taxYear} calYear={calYear}
                 setTaxYear={(y) => patch({ taxYear: y })} setCalYear={(y) => patch({ calYear: y })}
                 update={update} remove={(id) => patch({ sales: state.sales.filter((x) => x.id !== id) })}
-                onOpenRecord={() => setView('record')} onImportFile={readFile} onVinted={() => setDialog('vinted')} onAdd={addOne}
+                onOpenRecord={() => setView('record')} onUnlock={() => openUnlock()} onImportFile={readFile} onVinted={() => setDialog('vinted')} onAdd={addOne}
                 onExportCSV={exportCSV} onBackup={backup} capped={capped}
                 onRestore={restore} onClear={() => { patch({ sales: [] }); say('All data deleted from this device.'); }} />
             ))}

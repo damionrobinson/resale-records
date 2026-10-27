@@ -159,7 +159,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
 
         <section className="rec-sec">
           <h2><span>8</span>If this is your first tax return</h2>
-          <FirstTime taxYear={taxYear} takings={s.resale} unsortedCount={s.unsortedCount} />
+          <FirstTime taxYear={taxYear} takings={s.resale} unsortedCount={s.unsortedCount} capped={capped} />
         </section>
 
         <footer className="rec-foot">

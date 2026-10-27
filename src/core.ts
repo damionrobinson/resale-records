@@ -313,6 +313,8 @@ export function selfAssessmentDates(taxYear: string) {
   const start = taxYearStart(taxYear);
   return { registerBy: `${start + 1}-10-05`, fileAndPayBy: `${start + 2}-01-31` };
 }
+/** True once the tax year's first-time registration date (5 October after it ends) is behind us. */
+export const registrationPassed = (taxYear: string, todayISO: string) => todayISO > selfAssessmentDates(taxYear).registerBy;
 /** Which GOV.UK statement applies to these bought-to-resell takings: 'over' the £1,000 trading allowance, or not.
  *  It describes the rule beside the figure; it never decides for the user. */
 export const allowanceStatement = (takings: number): 'over' | 'not-over' => (takings > TRADING_ALLOWANCE ? 'over' : 'not-over');

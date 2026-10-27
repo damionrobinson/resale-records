@@ -7,7 +7,7 @@ export default function GuideFirstTime() {
   return (
     <GuidePage
       guide={FIRST_TIME}
-      answer={<>If your gross trading income is over £1,000 in a tax year, GOV.UK says you must tell HMRC by registering for Self Assessment. Being reported by a platform doesn’t mean you owe tax: what matters is whether you’re trading, and how much you take.</>}
+      answer={<>If your gross trading income is over £1,000 in a tax year, GOV.UK says you must tell HMRC by registering for Self Assessment. <Gov href="https://www.gov.uk/government/news/no-tax-changes-for-online-sellers">HMRC says</Gov> a platform sharing your sales data “does not automatically mean” you need to complete a tax return. Whether you need to tell HMRC depends on whether you’re trading and on your gross trading income: <Gov href={GOV.additionalIncome}>HMRC’s checker</Gov> can help.</>}
     >
       <h2>Does this apply to you?</h2>
       <p>GOV.UK says you’re likely to be trading if you sell regularly to make a profit, or make items to sell for profit. Occasionally selling your own unwanted things is treated differently. If you’re not sure which describes you, <Gov href={GOV.additionalIncome}>HMRC’s online checker</Gov> asks a few questions and tells you whether you need to tell HMRC.</p>
@@ -32,11 +32,12 @@ export default function GuideFirstTime() {
       <p>GOV.UK lists these penalties for a late return: £100 at first; after 3 months, £10 a day up to £900; after 6 months and again after 12 months, 5% of the tax due or £300, whichever is greater. Paying late adds 5% of the unpaid tax at 30 days, 6 months and 12 months, plus interest.</p>
 
       <h2>The steps, in order</h2>
+      <p>GOV.UK’s steps if you need to file a return:</p>
       <ol>
-        <li>Check whether you’re trading: <Gov href={GOV.additionalIncome}>HMRC’s checker</Gov>.</li>
+        <li>Check whether you need to tell HMRC about this income: <Gov href={GOV.additionalIncome}>HMRC’s checker</Gov>.</li>
         <li><Gov href={GOV.register}>Register for Self Assessment</Gov>.</li>
         <li>Wait for your <Term term="UTR" />. <Gov href={GOV.replyTime}>Check when to expect HMRC’s reply</Gov>.</li>
-        <li><Gov href={GOV.fileOnline}>File your return online</Gov>. You sign in to HMRC online, for example with a <Term term="Government Gateway" /> user ID.</li>
+        <li><Gov href={GOV.fileOnline}>File your return online</Gov>. You sign in with <Term term="Government Gateway or GOV.UK One Login" />.</li>
         <li><Gov href={GOV.pay}>Pay any tax due</Gov> by 31 January.</li>
       </ol>
 
@@ -46,13 +47,13 @@ export default function GuideFirstTime() {
         <li>Your <strong>takings</strong> from items you bought to resell, for the tax year.</li>
         <li>Either your <strong>actual costs</strong> (what you paid for those items, plus platform fees), or the <strong>£1,000 trading allowance</strong> instead. You can use one or the other, not both.</li>
       </ul>
-      <p>Platforms report your sales by calendar year, so their totals won’t match the tax year. <a href={TAX_YEAR.path}>Why your platform totals don’t match the tax year</a> explains the difference, and <a href={THIRTY_SALES.path}>the 30 sales or £1,700 rule</a> explains when a platform reports you. For Vinted in particular, see <a href={VINTED.path}>Will Vinted report me to HMRC?</a></p>
+      <p>Platforms report your sales by calendar year, so their totals often won’t match the tax year. <a href={TAX_YEAR.path}>Why your platform totals don’t match the tax year</a> explains the difference, and <a href={THIRTY_SALES.path}>the 30 sales or £1,700 rule</a> explains when a platform reports you. For Vinted in particular, see <a href={VINTED.path}>Will Vinted report me to HMRC?</a></p>
 
       <h2>Words you’ll see</h2>
       <dl className="glossary">
         {Object.entries(GLOSSARY).map(([term, def]) => <div key={term}><dt>{term[0].toUpperCase() + term.slice(1)}</dt><dd>{def}</dd></div>)}
       </dl>
-      <p>If your situation is more complicated, an accountant can help. If you can’t afford one, the charity <Gov href={TAXAID}>TaxAid</Gov> helps people who have nowhere else to turn.</p>
+      <p>If your situation is more complicated, an accountant can help. If you can’t afford one, the charity <Gov href={TAXAID}>TaxAid</Gov> helps people who can’t afford an adviser.</p>
     </GuidePage>
   );
 }

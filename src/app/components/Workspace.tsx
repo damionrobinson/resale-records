@@ -17,6 +17,7 @@ interface Props {
   update: (ids: Set<string>, patch: Partial<Sale> | ((s: Sale) => Partial<Sale>)) => void;
   remove: (id: string) => void;
   onOpenRecord: () => void;
+  onUnlock?: () => void;
   onImportFile: (f: File) => void;
   onVinted: () => void;
   onAdd: () => void;
@@ -28,7 +29,7 @@ interface Props {
   capped?: boolean;
 }
 
-export function Summary({ sales, taxYear, calYear, setTaxYear, setCalYear, onOpenRecord, capped }: Props) {
+export function Summary({ sales, taxYear, calYear, setTaxYear, setCalYear, onOpenRecord, onUnlock, capped }: Props) {
   const years = C.taxYearsIn(sales);
   const cals = [...new Set(sales.map((s) => C.calendarYearOf(s.date)))].sort().reverse();
   const s = C.taxYearSummary(sales, taxYear);
@@ -54,7 +55,7 @@ export function Summary({ sales, taxYear, calYear, setTaxYear, setCalYear, onOpe
       {s.missingCost > 0 && <div className="callout info">{s.missingCost} resale {s.missingCost === 1 ? 'sale is' : 'sales are'} missing what you paid, so profit is overstated.</div>}
       {s.overTradingAllowance && <div className="callout">Your bought-to-resell takings are over £{C.TRADING_ALLOWANCE.toLocaleString('en-GB')}, the trading allowance limit. <a href={GOV_ALLOWANCE} target="_blank" rel="noopener">GOV.UK explains what that means</a>.</div>}
       <button className="btn" type="button" onClick={onOpenRecord}>View tax year record</button>
-      <FirstTime taxYear={taxYear} takings={s.resale} unsortedCount={s.unsortedCount} />
+      <FirstTime taxYear={taxYear} takings={s.resale} unsortedCount={s.unsortedCount} capped={capped} onUnlock={onUnlock} />
 
       <div className="toolbar">
         <h2>Platform reports</h2>

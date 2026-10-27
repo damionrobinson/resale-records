@@ -140,6 +140,11 @@ describe('first-time filers', () => {
     expect(C.allowanceStatement(1000)).toBe('not-over');
     expect(C.allowanceStatement(1000.01)).toBe('over');
   });
+  it('knows when the registration date has passed', () => {
+    expect(C.registrationPassed('2025/26', '2026-10-05')).toBe(false);
+    expect(C.registrationPassed('2025/26', '2026-10-06')).toBe(true);
+    expect(C.registrationPassed('2026/27', '2026-10-27')).toBe(false);
+  });
 });
 
 describe('tax year record', () => {
