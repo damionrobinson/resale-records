@@ -10,6 +10,7 @@ export const GOV = {
   reporting: 'https://www.gov.uk/guidance/reporting-rules-for-digital-platforms',
   allowance: 'https://www.gov.uk/guidance/tax-free-allowances-on-property-and-trading-income',
   additionalIncome: 'https://www.gov.uk/check-additional-income-tax',
+  onlinePlatformsIncome: 'https://www.gov.uk/guidance/check-if-you-need-to-tell-hmrc-about-your-income-from-online-platforms',
   deadlines: 'https://www.gov.uk/self-assessment-tax-returns/deadlines',
   register: 'https://www.gov.uk/register-for-self-assessment',
   replyTime: 'https://www.gov.uk/guidance/check-when-you-can-expect-a-reply-from-hmrc',

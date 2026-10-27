@@ -1,12 +1,13 @@
+import type { ReactNode } from 'react';
 import { GOV, PAY_URL } from '../shared/site';
 import { GUIDES } from './guides';
 import { SiteFooter, SiteHeader } from './Layout';
 import ReportChecker from './ReportChecker';
 
-const PROBLEMS = [
+const PROBLEMS: [string, ReactNode][] = [
   ['Platforms report by calendar year', 'Each platform tells HMRC about you if you make 30 or more sales, or take more than €2,000 (about £1,700), on that platform in a calendar year.'],
   ['Tax works on the tax year', 'The £1,000 trading allowance and Self Assessment run from 6 April to 5 April. Your platform totals won’t line up with that unless you re-sort them.'],
-  ['Not every sale is trading', 'Selling your own old things is usually different from buying to resell. You need a record showing which was which.'],
+  ['Not every sale is trading', <><a href={GOV.onlinePlatformsIncome} rel="noopener" target="_blank">GOV.UK says</a> if you’re selling personal possessions you “probably do not have to pay Income Tax”, but you’re “probably trading” if you sell goods you bought intending to sell for a profit. A record shows which was which.</>],
 ];
 const VS = [
   ['Your buyers’ names and addresses', 'Uploaded to an AI company', 'Never leave your device'],
