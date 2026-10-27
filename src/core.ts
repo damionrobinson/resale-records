@@ -306,6 +306,17 @@ export function reportingCheck(sales: Sale[], year: number): ReportRow[] {
   }).sort((a, b) => a.platform.localeCompare(b.platform));
 }
 
+// ---------- First-time filers ----------
+/** Self Assessment dates for a tax year, as GOV.UK states them: tell HMRC (register) by 5 October after the tax year
+ *  ends, then file online and pay by 31 January after that. For '2025/26': 2026-10-05 and 2027-01-31. */
+export function selfAssessmentDates(taxYear: string) {
+  const start = taxYearStart(taxYear);
+  return { registerBy: `${start + 1}-10-05`, fileAndPayBy: `${start + 2}-01-31` };
+}
+/** Which GOV.UK statement applies to these bought-to-resell takings: 'over' the £1,000 trading allowance, or not.
+ *  It describes the rule beside the figure; it never decides for the user. */
+export const allowanceStatement = (takings: number): 'over' | 'not-over' => (takings > TRADING_ALLOWANCE ? 'over' : 'not-over');
+
 // ---------- Tax year record ----------
 export interface TaxYearRecord {
   summary: TaxYearSummary;

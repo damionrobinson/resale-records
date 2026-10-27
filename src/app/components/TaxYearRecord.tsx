@@ -2,6 +2,7 @@ import { useState } from 'react';
 import * as C from '../../core';
 import type { Sale } from '../../core';
 import { gbp, longDate, ukDate } from '../state';
+import FirstTime, { FiguresAskedFor } from './FirstTime';
 
 const GOV_ALLOWANCE = 'https://www.gov.uk/guidance/tax-free-allowances-on-property-and-trading-income';
 const GOV_REPORTING = 'https://www.gov.uk/guidance/reporting-rules-for-digital-platforms';
@@ -89,7 +90,13 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
         </section>
 
         <section className="rec-sec">
-          <h2><span>2</span>Personal clear-out</h2>
+          <h2><span>2</span>Figures you’ll be asked for</h2>
+          <FiguresAskedFor takings={s.resale} cost={s.resaleCost} fees={s.resaleFees} />
+          <p className="rec-note">Plain-English names for the figures, not form box numbers. Check the form and GOV.UK guidance as you fill it in.</p>
+        </section>
+
+        <section className="rec-sec">
+          <h2><span>3</span>Personal clear-out</h2>
           <table className="rec-fig">
             <tbody><tr className="total"><th>Takings from selling your own things</th><td>{gbp(s.personal)}</td></tr></tbody>
           </table>
@@ -97,7 +104,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
         </section>
 
         <section className="rec-sec">
-          <h2><span>3</span>By platform, this tax year</h2>
+          <h2><span>4</span>By platform, this tax year</h2>
           <table className="rec-tab">
             <thead><tr><th>Platform</th><th>Sales</th><th>Resale</th><th>Personal</th><th>Not sorted</th><th>Total</th></tr></thead>
             <tbody>
@@ -109,7 +116,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
         </section>
 
         <section className="rec-sec">
-          <h2><span>4</span>What your platforms report to HMRC</h2>
+          <h2><span>5</span>What your platforms report to HMRC</h2>
           <p className="rec-note">Platforms report by calendar year (1 January to 31 December), so these totals won't match the tax year above. A platform reports you once you make 30 sales or take more than about £1,700 (€2,000) on it in a calendar year. <a href={GOV_REPORTING}>gov.uk/guidance/reporting-rules-for-digital-platforms</a></p>
           <div className="rec-cal">
             {r.calendarReports.map((c) => (
@@ -127,7 +134,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
         </section>
 
         <section className="rec-sec">
-          <h2><span>5</span>Month by month</h2>
+          <h2><span>6</span>Month by month</h2>
           <table className="rec-tab">
             <thead><tr><th>Month</th><th>Sales</th><th>Resale</th><th>Personal</th><th>Not sorted</th></tr></thead>
             <tbody>
@@ -139,7 +146,7 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
         </section>
 
         <section className="rec-sec rec-list">
-          <h2><span>6</span>Every sale this tax year</h2>
+          <h2><span>7</span>Every sale this tax year</h2>
           <table className="rec-tab">
             <thead><tr><th>Date</th><th>Platform</th><th>Item</th><th>Sold for</th><th>Fees</th><th>You paid</th><th>Type</th></tr></thead>
             <tbody>
@@ -148,6 +155,11 @@ export default function TaxYearRecord({ sales, taxYear, setTaxYear, unlocked, on
               ))}
             </tbody>
           </table>
+        </section>
+
+        <section className="rec-sec">
+          <h2><span>8</span>If this is your first tax return</h2>
+          <FirstTime taxYear={taxYear} takings={s.resale} unsortedCount={s.unsortedCount} />
         </section>
 
         <footer className="rec-foot">
