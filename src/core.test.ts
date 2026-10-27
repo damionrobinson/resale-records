@@ -84,6 +84,13 @@ describe('imports', () => {
     const { sales } = C.recordsToSales(records, map, order);
     expect(sales.map((s) => [s.date, s.amount, s.fees])).toEqual([['2024-10-25', 20, 0], ['2024-10-26', 10, 0]]);
   });
+  it('picks the seller-fee column that holds amounts (UK Depop: payment fee, no selling fee)', () => {
+    const { headers, records } = C.parseCSV('Date of sale,Item price,Depop fee,Depop Payments fee,Buyer Marketplace Fee,Fees refunded to seller\n01/10/2026,£20.00,£0.00,£0.88,£1.50,£0.88\n02/10/2026,£10.00,£0.00,£0.59,£1.00,');
+    expect(C.guessMapping(headers, 'depop.csv', records).fees).toBe('Depop Payments fee');
+    expect(C.guessMapping(headers, 'depop.csv').fees).toBe('Depop fee'); // without rows, the name-based guess
+    const etsy = C.parseCSV('Sale Date,Order Value,Card Processing Fees,Adjusted Card Processing Fees\n03/03/26,5.00,0.40,');
+    expect(C.guessMapping(etsy.headers, 'etsy.csv', etsy.records).fees).toBe('Card Processing Fees');
+  });
   it('Etsy Orders file with a byte-order mark and $ amounts', () => {
     const { headers, records } = C.parseCSV('﻿Sale Date,Order ID,Number of Items,Currency,Order Value,Order Total,Card Processing Fees,Adjusted Order Total\n03/03/26,1,3,GBP,$5.00,$7.50,$0.40,');
     const map = C.guessMapping(headers, 'EtsySoldOrders2026.csv');

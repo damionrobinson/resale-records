@@ -40,7 +40,7 @@ export function ImportDialog({ file, room, onClose, onImport }: {
   onClose: () => void;
   onImport: (sales: Sale[]) => void;
 }) {
-  const initial = useMemo(() => (file ? C.guessMapping(file.headers, file.name) : null), [file]);
+  const initial = useMemo(() => (file ? C.guessMapping(file.headers, file.name, file.records) : null), [file]);
   const [map, setMap] = useState<ColumnMap | null>(null);
   const [order, setOrder] = useState<DateOrder | null>(null);
   const m = map ?? initial;

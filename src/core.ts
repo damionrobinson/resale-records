@@ -116,7 +116,17 @@ export function detectPlatform(headers: string[], fileName = ''): string {
   if (/vinted/.test(f)) return 'Vinted';
   return '';
 }
-export function guessMapping(headers: string[], fileName = ''): ColumnMap {
+/** The fee column to read by default. With the rows to hand, prefer the seller-fee column that actually holds
+ *  amounts: UK Depop files carry an empty "Depop fee" (no UK selling fee) beside a filled "Depop Payments fee". */
+function guessFees(headers: string[], records?: CsvRecord[]): string {
+  const fallback = guessColumn(headers, 'fees');
+  if (!records?.length) return fallback;
+  const candidates = headers.filter((h) => /\bfees?\b/.test(norm(h)) && !/buyer|refund/.test(norm(h)));
+  const total = (h: string) => records.reduce((a, r) => a + (Math.abs(parseMoney(r[h])) || 0), 0);
+  const best = candidates.reduce((b, h) => (total(h) > total(b) ? h : b), fallback || candidates[0] || '');
+  return best && total(best) > 0 ? best : fallback;
+}
+export function guessMapping(headers: string[], fileName = '', records?: CsvRecord[]): ColumnMap {
   return {
     platform: detectPlatform(headers, fileName),
     date: guessColumn(headers, 'date'),
@@ -124,7 +134,7 @@ export function guessMapping(headers: string[], fileName = ''): ColumnMap {
     item: guessColumn(headers, 'item'),
     orderId: guessColumn(headers, 'orderId'),
     quantity: guessColumn(headers, 'quantity'),
-    fees: guessColumn(headers, 'fees'),
+    fees: guessFees(headers, records),
   };
 }
 
